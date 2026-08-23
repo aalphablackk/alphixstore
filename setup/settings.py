@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "products",
     "dashboard",
     "accounts",
+    "cart",
     "crispy_forms",
     "crispy_bootstrap5",
 
@@ -69,6 +70,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "cart.context_processors.cart_count",
             ],
         },
     },
