@@ -3,75 +3,873 @@
 {% load crispy_forms_tags %}
 
 
-
 {% block title %}
-
-Edit Product
-
+Edit {{ product.name }} | Alphix Store
 {% endblock %}
-
 
 
 
 {% block content %}
 
+<section class="product-form-section">
 
-<div class="container mt-5">
-
-
-<div class="card shadow">
+    <div class="container">
 
 
-<div class="card-header">
+        <!-- =====================================================
+             PAGE HEADER
+        ====================================================== -->
 
-<h4>
-Edit {{ product.name }}
-</h4>
+        <div
+            class="product-form-header"
+            data-reveal
+        >
 
-</div>
+            <div>
 
+                <span class="section-label">
+                    Store Management
+                </span>
 
+                <h1>
+                    Edit Product
+                </h1>
 
-<div class="card-body">
+                <p>
+                    Update the information for
+                    <strong>{{ product.name }}</strong>.
+                </p>
 
-
-<form method="POST">
-
-
-{% csrf_token %}
-
-
-{{ form|crispy }}
-
-
-
-<button 
-class="btn btn-primary">
-
-Update Product
-
-</button>
+            </div>
 
 
-<a 
-href="{% url 'product_list' %}"
-class="btn btn-secondary">
+            <a
+                href="{% url 'product_list' %}"
+                class="product-back-button"
+            >
 
-Cancel
+                <i class="bi bi-arrow-left"></i>
 
-</a>
+                Back to Products
 
+            </a>
 
-</form>
-
-
-</div>
-
-
-</div>
+        </div>
 
 
-</div>
+
+        <!-- =====================================================
+             EDIT FORM
+        ====================================================== -->
+
+        <div
+            class="product-form-card"
+            data-reveal
+        >
+
+
+            <!-- HEADER -->
+
+            <div class="product-form-card-header">
+
+
+                <div class="product-form-header-icon">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h2>
+                        Product Information
+                    </h2>
+
+                    <p>
+                        Update your product details below.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- BODY -->
+
+            <div class="product-form-body">
+
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+
+                    <!-- =================================================
+                         PRODUCT INFORMATION
+                    ================================================== -->
+
+                    <div class="product-form-group">
+
+
+                        <div class="product-form-section-title">
+
+                            <span>
+                                01
+                            </span>
+
+
+                            <div>
+
+                                <h3>
+                                    Product Details
+                                </h3>
+
+                                <p>
+                                    Update the basic information
+                                    about this product.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        {{ form|crispy }}
+
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         FORM ACTIONS
+                    ================================================== -->
+
+                    <div class="product-form-actions">
+
+
+                        <a
+                            href="{% url 'product_list' %}"
+                            class="product-cancel-button"
+                        >
+
+                            <i class="bi bi-x-lg"></i>
+
+                            Cancel
+
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="product-save-button"
+                        >
+
+                            <i class="bi bi-check-lg"></i>
+
+                            Update Product
+
+                        </button>
+
+
+                    </div>
+
+
+                </form>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}
+
+
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   PRODUCT FORM SECTION
+========================================================= */
+
+.product-form-section {
+
+    padding: 50px 0 100px;
+
+    background-color: var(--background);
+
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.product-form-header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.product-form-header h1 {
+
+    margin: 5px 0 7px;
+
+    color: var(--text);
+
+    font-size: 2rem;
+
+    font-weight: 800;
+
+    letter-spacing: -0.8px;
+
+}
+
+
+.product-form-header p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.78rem;
+
+}
+
+
+.product-form-header p strong {
+
+    color: var(--text);
+
+}
+
+
+.product-back-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 10px 14px;
+
+    background-color: var(--surface);
+
+    color: var(--text-secondary);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+
+}
+
+
+.product-back-button:hover {
+
+    color: var(--text);
+
+    background-color: var(--surface-soft);
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.product-form-card {
+
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    overflow: hidden;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
+
+    box-shadow: var(--shadow-sm);
+
+}
+
+
+.product-form-card-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 23px 28px;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.product-form-header-icon {
+
+    width: 43px;
+
+    height: 43px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 10px;
+
+}
+
+
+.product-form-card-header h2 {
+
+    margin: 0 0 3px;
+
+    color: var(--text);
+
+    font-size: 1rem;
+
+    font-weight: 800;
+
+}
+
+
+.product-form-card-header p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.67rem;
+
+}
+
+
+/* =========================================================
+   FORM BODY
+========================================================= */
+
+.product-form-body {
+
+    padding: 28px;
+
+}
+
+
+.product-form-group {
+
+    margin-bottom: 5px;
+
+}
+
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
+
+.product-form-section-title {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.product-form-section-title > span {
+
+    width: 28px;
+
+    height: 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 7px;
+
+    font-size: 0.6rem;
+
+    font-weight: 800;
+
+}
+
+
+.product-form-section-title h3 {
+
+    margin: 1px 0 3px;
+
+    color: var(--text);
+
+    font-size: 0.85rem;
+
+    font-weight: 800;
+
+}
+
+
+.product-form-section-title p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.64rem;
+
+}
+
+
+/* =========================================================
+   CRISPY FORMS
+========================================================= */
+
+.product-form-body .form-label {
+
+    color: var(--text);
+
+    font-size: 0.72rem;
+
+    font-weight: 600;
+
+}
+
+
+.product-form-body .form-control,
+.product-form-body .form-select {
+
+    min-height: 43px;
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border-color: var(--border);
+
+    border-radius: 8px;
+
+    font-size: 0.75rem;
+
+}
+
+
+.product-form-body textarea.form-control {
+
+    min-height: 120px;
+
+    resize: vertical;
+
+}
+
+
+.product-form-body .form-control:focus,
+.product-form-body .form-select:focus {
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.10);
+
+}
+
+
+.product-form-body .form-check {
+
+    margin-top: 8px;
+
+    padding: 13px 15px;
+
+    background-color: var(--surface-soft);
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+}
+
+
+.product-form-body .form-check-label {
+
+    color: var(--text);
+
+    font-size: 0.7rem;
+
+    font-weight: 600;
+
+}
+
+
+.product-form-body .form-text {
+
+    color: var(--text-muted);
+
+    font-size: 0.62rem;
+
+}
+
+
+/* =========================================================
+   FORM ACTIONS
+========================================================= */
+
+.product-form-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    margin-top: 30px;
+
+    padding-top: 22px;
+
+    border-top: 1px solid var(--border);
+
+}
+
+
+.product-cancel-button,
+.product-save-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 40px;
+
+    padding: 0 15px;
+
+    border-radius: 8px;
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+
+}
+
+
+.product-cancel-button {
+
+    background-color: var(--surface);
+
+    color: var(--text-secondary);
+
+    border: 1px solid var(--border);
+
+}
+
+
+.product-cancel-button:hover {
+
+    color: var(--text);
+
+    background-color: var(--surface-soft);
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+.product-save-button {
+
+    background-color: var(--primary);
+
+    color: white;
+
+    border: 1px solid var(--primary);
+
+}
+
+
+.product-save-button:hover {
+
+    background-color: var(--primary-dark);
+
+    color: white;
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* =========================================================
+   REVEAL ANIMATION
+========================================================= */
+
+[data-reveal] {
+
+    opacity: 0;
+
+    transform:
+        translateY(20px);
+
+    transition:
+        opacity 0.6s ease,
+        transform 0.6s ease;
+
+}
+
+
+[data-reveal].revealed {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .product-form-section {
+
+        padding: 40px 0 70px;
+
+    }
+
+
+    .product-form-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+
+    .product-form-header h1 {
+
+        font-size: 1.7rem;
+
+    }
+
+
+    .product-back-button {
+
+        width: 100%;
+
+    }
+
+
+    .product-form-body {
+
+        padding: 22px 20px;
+
+    }
+
+
+    .product-form-card-header {
+
+        padding: 20px;
+
+    }
+
+
+    .product-form-actions {
+
+        flex-direction: column-reverse;
+
+    }
+
+
+    .product-cancel-button,
+    .product-save-button {
+
+        width: 100%;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    [data-reveal] {
+
+        transition: none;
+
+    }
+
+}
+
+</style>
+
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const revealElements =
+            document.querySelectorAll(
+                "[data-reveal]"
+            );
+
+
+        if (
+            "IntersectionObserver"
+            in window
+        ) {
+
+
+            const observer =
+                new IntersectionObserver(
+                    function (entries) {
+
+                        entries.forEach(
+                            function (entry) {
+
+                                if (
+                                    entry.isIntersecting
+                                ) {
+
+                                    entry.target.classList.add(
+                                        "revealed"
+                                    );
+
+                                    observer.unobserve(
+                                        entry.target
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    },
+                    {
+                        threshold: 0.08
+                    }
+
+                );
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    observer.observe(
+                        element
+                    );
+
+                }
+            );
+
+
+        } else {
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    element.classList.add(
+                        "revealed"
+                    );
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
 
 
 {% endblock %}

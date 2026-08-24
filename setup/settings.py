@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'django.contrib.humanize',
     "products",
     "dashboard",
     "accounts",
     "cart",
+    "orders",
     "crispy_forms",
     "crispy_bootstrap5",
 
@@ -131,8 +133,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
-STATICFILES_DIR = [
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 MEDIA_URL = 'media/'

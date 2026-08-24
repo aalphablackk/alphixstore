@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 
+{% load humanize %}
+
 
 {% block title %}
-Home
+    Alphix Store | Home
 {% endblock %}
 
 
@@ -10,33 +12,674 @@ Home
 {% block content %}
 
 
-<div class="container mt-5">
+<!-- =========================================================
+     HERO SECTION
+========================================================= -->
+
+<section class="alphix-hero">
+
+    <div class="container">
+
+        <div class="row align-items-center min-vh-75">
 
 
-    <!-- Hero Section -->
+            <!-- HERO CONTENT -->
 
-    <div class="p-5 mb-5 bg-light rounded-3 shadow-sm">
+            <div class="col-lg-7">
 
-        <div class="container-fluid py-5">
-
-
-            <h1 class="display-5 fw-bold">
-                Welcome To Our Store
-            </h1>
+                <div
+                    class="hero-content"
+                    data-reveal
+                >
 
 
-            <p class="col-md-8 fs-5">
+                    <span class="hero-badge">
 
-                Discover quality products at affordable prices.
-                Browse our collection and find what suits you.
+                        <i class="bi bi-stars"></i>
 
+                        Welcome to Alphix Store
+
+                    </span>
+
+
+                    <h1 class="hero-title">
+
+                        Quality products.
+                        <span>
+                            Better shopping.
+                        </span>
+
+                    </h1>
+
+
+                    <p class="hero-text">
+
+                        Discover carefully selected products at prices
+                        you'll love. Shop with confidence and enjoy a
+                        simple, modern shopping experience.
+
+                    </p>
+
+
+                    <!-- HERO BUTTONS -->
+
+                    <div class="hero-actions">
+
+
+                        <a
+                            href="{% url 'all_products' %}"
+                            class="btn btn-primary btn-lg hero-btn"
+                        >
+
+                            Shop Now
+
+                            <i class="bi bi-arrow-right ms-2"></i>
+
+                        </a>
+
+
+                        <a
+                            href="#featured-products"
+                            class="btn btn-outline-primary btn-lg hero-secondary-btn"
+                        >
+
+                            Explore Products
+
+                        </a>
+
+
+                    </div>
+
+
+                    <!-- HERO TRUST -->
+
+                    <div class="hero-trust">
+
+
+                        <div class="hero-trust-item">
+
+                            <i class="bi bi-shield-check"></i>
+
+                            <span>
+                                Trusted Shopping
+                            </span>
+
+                        </div>
+
+
+                        <div class="hero-trust-item">
+
+                            <i class="bi bi-bag-check"></i>
+
+                            <span>
+                                Quality Products
+                            </span>
+
+                        </div>
+
+
+                        <div class="hero-trust-item">
+
+                            <i class="bi bi-headset"></i>
+
+                            <span>
+                                Customer Support
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- HERO VISUAL -->
+
+            <div class="col-lg-5 d-none d-lg-block">
+
+                <div
+                    class="hero-visual"
+                    data-reveal
+                >
+
+
+                    <div class="hero-orbit hero-orbit-one"></div>
+
+                    <div class="hero-orbit hero-orbit-two"></div>
+
+
+                    <div class="hero-product-card">
+
+
+                        <div class="hero-product-icon">
+
+                            <i class="bi bi-bag-heart"></i>
+
+                        </div>
+
+
+                        <span>
+                            Shop smarter
+                        </span>
+
+
+                        <strong>
+                            Discover more.
+                        </strong>
+
+
+                    </div>
+
+
+                    <!-- FLOATING ELEMENTS -->
+
+                    <div class="floating-card floating-card-one">
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        <div>
+
+                            <strong>
+                                Quality
+                            </strong>
+
+                            <small>
+                                Carefully selected
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="floating-card floating-card-two">
+
+                        <i class="bi bi-lightning-charge-fill"></i>
+
+                        <div>
+
+                            <strong>
+                                Easy Shopping
+                            </strong>
+
+                            <small>
+                                Simple & convenient
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     FEATURED PRODUCTS
+========================================================= -->
+
+<section
+    class="featured-section"
+    id="featured-products"
+>
+
+    <div class="container">
+
+
+        <!-- SECTION HEADER -->
+
+        <div
+            class="section-heading"
+            data-reveal
+        >
+
+
+            <div>
+
+                <span class="section-label">
+                    Our Collection
+                </span>
+
+
+                <h2>
+                    Featured Products
+                </h2>
+
+
+                <p>
+                    Explore some of our latest and most popular products.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'all_products' %}"
+                class="section-link"
+            >
+
+                View All Products
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+
+        </div>
+
+
+
+        <!-- PRODUCTS -->
+
+        <div class="row g-4">
+
+
+            {% for product in products %}
+
+
+                <div
+                    class="col-xl-3 col-lg-4 col-md-6"
+                    data-reveal
+                >
+
+
+                    <div class="product-card">
+
+
+                        <!-- PRODUCT IMAGE -->
+
+                        <div class="product-image-wrapper">
+
+
+                            {% for image in product.images.all %}
+
+
+                                {% if image.is_cover %}
+
+                                    <img
+                                        src="{{ image.image.url }}"
+                                        alt="{{ product.name }}"
+                                        class="product-image"
+                                    >
+
+                                {% endif %}
+
+
+                            {% empty %}
+
+
+                                <div class="product-no-image">
+
+                                    <i class="bi bi-image"></i>
+
+                                    <span>
+                                        No Image
+                                    </span>
+
+                                </div>
+
+
+                            {% endfor %}
+
+
+                            <!-- PRODUCT OVERLAY -->
+
+                            <a
+                                href="{% url 'product_detail' product.id %}"
+                                class="product-view-button"
+                            >
+
+                                <i class="bi bi-eye"></i>
+
+                                View Product
+
+                            </a>
+
+
+                        </div>
+
+
+
+                        <!-- PRODUCT INFORMATION -->
+
+                        <div class="product-info">
+
+
+                            {% if product.brand %}
+
+                                <span class="product-brand">
+
+                                    {{ product.brand.name }}
+
+                                </span>
+
+                            {% endif %}
+
+
+                            <h3 class="product-name">
+
+                                {{ product.name }}
+
+                            </h3>
+
+
+                            <p class="product-description">
+
+                                {{ product.description|truncatewords:15 }}
+
+                            </p>
+
+
+                            <div
+                                class="product-bottom"
+                            >
+
+                                <span class="product-price">
+
+                                    ₦{{ product.price|intcomma }}
+
+                                </span>
+
+
+                                <a
+                                    href="{% url 'product_detail' product.id %}"
+                                    class="product-arrow"
+                                    aria-label="View {{ product.name }}"
+                                >
+
+                                    <i class="bi bi-arrow-up-right"></i>
+
+                                </a>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            {% empty %}
+
+
+                <div class="col-12">
+
+                    <div class="empty-products">
+
+                        <div class="empty-products-icon">
+
+                            <i class="bi bi-box-seam"></i>
+
+                        </div>
+
+
+                        <h4>
+                            No products available
+                        </h4>
+
+
+                        <p>
+                            We're currently updating our collection.
+                            Please check back soon.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     WHY ALPHIX
+========================================================= -->
+
+<section class="why-alphix-section">
+
+
+    <div class="container">
+
+
+        <div
+            class="why-alphix-header text-center"
+            data-reveal
+        >
+
+            <span class="section-label">
+                Why Alphix
+            </span>
+
+
+            <h2>
+                Shopping made simple
+            </h2>
+
+
+            <p>
+                Everything you need for a better online shopping
+                experience.
             </p>
 
+        </div>
 
-            <a href="{% url 'all_products' %}"
-               class="btn btn-primary btn-lg">
 
-                Shop Now
+
+        <div class="row g-4 mt-4">
+
+
+            <!-- FEATURE 1 -->
+
+            <div
+                class="col-lg-3 col-md-6"
+                data-reveal
+            >
+
+                <div class="feature-card">
+
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-shield-check"></i>
+
+                    </div>
+
+
+                    <h4>
+                        Trusted
+                    </h4>
+
+
+                    <p>
+                        Shop with confidence knowing your experience
+                        matters to us.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FEATURE 2 -->
+
+            <div
+                class="col-lg-3 col-md-6"
+                data-reveal
+            >
+
+                <div class="feature-card">
+
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-stars"></i>
+
+                    </div>
+
+
+                    <h4>
+                        Quality
+                    </h4>
+
+
+                    <p>
+                        We focus on products that deliver real value
+                        to our customers.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FEATURE 3 -->
+
+            <div
+                class="col-lg-3 col-md-6"
+                data-reveal
+            >
+
+                <div class="feature-card">
+
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-lightning-charge"></i>
+
+                    </div>
+
+
+                    <h4>
+                        Convenient
+                    </h4>
+
+
+                    <p>
+                        Browse, choose and manage your orders with
+                        ease.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FEATURE 4 -->
+
+            <div
+                class="col-lg-3 col-md-6"
+                data-reveal
+            >
+
+                <div class="feature-card">
+
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-headset"></i>
+
+                    </div>
+
+
+                    <h4>
+                        Support
+                    </h4>
+
+
+                    <p>
+                        We're here to make your shopping experience
+                        as smooth as possible.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     CTA SECTION
+========================================================= -->
+
+<section class="home-cta-section">
+
+
+    <div class="container">
+
+
+        <div
+            class="home-cta"
+            data-reveal
+        >
+
+
+            <div>
+
+                <span class="section-label">
+                    Ready to shop?
+                </span>
+
+
+                <h2>
+                    Find something you'll love.
+                </h2>
+
+
+                <p>
+                    Browse our complete collection and discover your
+                    next favourite product.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'all_products' %}"
+                class="btn btn-light btn-lg"
+            >
+
+                Browse Products
+
+                <i class="bi bi-arrow-right ms-2"></i>
 
             </a>
 
@@ -45,160 +688,1362 @@ Home
 
     </div>
 
+</section>
 
 
 
+{% endblock %}
 
 
-    <!-- Featured Products -->
 
+{% block extra_css %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<style>
 
+/* =========================================================
+   HERO
+========================================================= */
 
-        <h2>
-            Featured Products
-        </h2>
+.alphix-hero {
 
+    position: relative;
 
+    min-height: 680px;
 
-        <a href="{% url 'all_products' %}"
-           class="btn btn-outline-primary">
+    display: flex;
 
-            View More Products
+    align-items: center;
 
-        </a>
+    overflow: hidden;
+}
 
 
-    </div>
+.min-vh-75 {
+    min-height: 680px;
+}
 
 
+.hero-content {
+    position: relative;
 
+    z-index: 2;
+}
 
 
+.hero-badge {
 
-    <div class="row">
+    display: inline-flex;
 
+    align-items: center;
 
+    gap: 8px;
 
-        {% for product in products %}
+    padding: 8px 13px;
 
+    margin-bottom: 22px;
 
+    background-color: var(--primary-light);
 
-        <div class="col-lg-3 col-md-6 mb-4">
+    color: var(--primary);
 
+    border-radius: 50px;
 
-            <div class="card h-100 shadow-sm">
+    font-size: 0.85rem;
 
+    font-weight: 600;
+}
 
 
-                {% for image in product.images.all %}
+.hero-title {
 
+    max-width: 720px;
 
-                    {% if image.is_cover %}
+    margin-bottom: 22px;
 
-                    <img 
-                        src="{{ image.image.url }}"
-                        class="card-img-top"
-                        style="height:250px; object-fit:cover;"
-                    >
+    font-size: clamp(3rem, 6vw, 5.2rem);
 
-                    {% endif %}
+    line-height: 1.02;
 
+    letter-spacing: -3px;
 
-                {% empty %}
+    font-weight: 800;
 
+    color: var(--text);
+}
 
-                    <div class="bg-secondary text-white text-center p-5">
 
-                        No Image
+.hero-title span {
 
-                    </div>
+    display: block;
 
+    color: var(--primary);
+}
 
-                {% endfor %}
 
+.hero-text {
 
+    max-width: 620px;
 
+    margin-bottom: 32px;
 
+    color: var(--text-secondary);
 
-                <div class="card-body d-flex flex-column">
+    font-size: 1.1rem;
 
+    line-height: 1.8;
+}
 
-                    <h5 class="card-title">
 
-                        {{ product.name }}
+.hero-actions {
 
-                    </h5>
+    display: flex;
 
+    flex-wrap: wrap;
 
+    gap: 12px;
+}
 
-                    <p class="text-muted">
 
-                        {{ product.brand.name }}
+.hero-btn {
 
-                    </p>
+    padding: 13px 23px;
 
+    border-radius: 10px;
+}
 
 
+.hero-secondary-btn {
 
-                    <h5 class="text-primary">
+    padding: 13px 23px;
 
-                        ${{ product.price }}
+    border-radius: 10px;
+}
 
-                    </h5>
 
+/* =========================================================
+   HERO TRUST
+========================================================= */
 
+.hero-trust {
 
-                    <p>
+    display: flex;
 
-                        {{ product.description|truncatewords:15 }}
+    flex-wrap: wrap;
 
-                    </p>
+    gap: 24px;
 
+    margin-top: 38px;
+}
 
 
-                    <a 
-                    href="{% url 'product_detail' product.id %}"
-                    class="btn btn-dark mt-auto">
+.hero-trust-item {
 
-                        View Product
+    display: flex;
 
-                    </a>
+    align-items: center;
 
+    gap: 8px;
 
-                </div>
+    color: var(--text-secondary);
 
+    font-size: 0.85rem;
 
-            </div>
+    font-weight: 500;
+}
 
 
-        </div>
+.hero-trust-item i {
 
+    color: var(--primary);
 
+    font-size: 1.1rem;
+}
 
-        {% empty %}
 
+/* =========================================================
+   HERO VISUAL
+========================================================= */
 
+.hero-visual {
 
-        <div class="alert alert-info">
+    position: relative;
 
-            No products available.
+    width: 460px;
 
-        </div>
+    height: 460px;
 
+    margin: auto;
+}
 
 
-        {% endfor %}
+.hero-product-card {
 
+    position: absolute;
 
+    top: 50%;
 
-    </div>
+    left: 50%;
 
+    width: 270px;
 
+    height: 270px;
 
+    display: flex;
 
-</div>
+    flex-direction: column;
 
+    align-items: center;
+
+    justify-content: center;
+
+    transform:
+        translate(-50%, -50%);
+
+    background:
+        linear-gradient(
+            145deg,
+            var(--surface),
+            var(--surface-soft)
+        );
+
+    border: 1px solid var(--border);
+
+    border-radius: 35px;
+
+    box-shadow: var(--shadow-lg);
+
+    animation:
+        heroFloat 5s ease-in-out infinite;
+}
+
+
+.hero-product-icon {
+
+    width: 85px;
+
+    height: 85px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 24px;
+
+    font-size: 2.5rem;
+}
+
+
+.hero-product-card span {
+
+    color: var(--text-muted);
+
+    font-size: 0.85rem;
+}
+
+
+.hero-product-card strong {
+
+    margin-top: 5px;
+
+    color: var(--text);
+
+    font-size: 1.35rem;
+}
+
+
+/* =========================================================
+   HERO ORBITS
+========================================================= */
+
+.hero-orbit {
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 50%;
+
+    border: 1px solid
+        rgba(37, 99, 235, 0.15);
+
+    border-radius: 50%;
+
+    transform:
+        translate(-50%, -50%);
+}
+
+
+.hero-orbit-one {
+
+    width: 360px;
+
+    height: 360px;
+
+    animation:
+        orbitRotate 20s linear infinite;
+}
+
+
+.hero-orbit-two {
+
+    width: 450px;
+
+    height: 450px;
+
+    border-style: dashed;
+
+    animation:
+        orbitRotateReverse 30s linear infinite;
+}
+
+
+/* =========================================================
+   FLOATING CARDS
+========================================================= */
+
+.floating-card {
+
+    position: absolute;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 12px 15px;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    box-shadow: var(--shadow);
+
+    z-index: 3;
+}
+
+
+.floating-card i {
+
+    color: var(--primary);
+
+    font-size: 1.2rem;
+}
+
+
+.floating-card strong {
+
+    display: block;
+
+    color: var(--text);
+
+    font-size: 0.8rem;
+}
+
+
+.floating-card small {
+
+    display: block;
+
+    color: var(--text-muted);
+
+    font-size: 0.7rem;
+}
+
+
+.floating-card-one {
+
+    top: 40px;
+
+    right: 10px;
+
+    animation:
+        floatingCardOne 4s ease-in-out infinite alternate;
+}
+
+
+.floating-card-two {
+
+    bottom: 55px;
+
+    left: 0;
+
+    animation:
+        floatingCardTwo 5s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.featured-section {
+
+    padding: 100px 0;
+
+    background-color: var(--surface);
+}
+
+
+.section-heading {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 40px;
+}
+
+
+.section-label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--primary);
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    text-transform: uppercase;
+}
+
+
+.section-heading h2,
+.why-alphix-header h2 {
+
+    margin-bottom: 8px;
+
+    color: var(--text);
+
+    font-size: 2rem;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+}
+
+
+.section-heading p,
+.why-alphix-header p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+}
+
+
+.section-link {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--primary);
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+}
+
+
+.section-link:hover {
+
+    color: var(--primary-dark);
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   PRODUCT CARD
+========================================================= */
+
+.product-card {
+
+    height: 100%;
+
+    overflow: hidden;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+}
+
+
+.product-card:hover {
+
+    transform: translateY(-8px);
+
+    box-shadow: var(--shadow);
+
+    border-color:
+        rgba(37, 99, 235, 0.25);
+}
+
+
+/* =========================================================
+   PRODUCT IMAGE
+========================================================= */
+
+.product-image-wrapper {
+
+    position: relative;
+
+    height: 270px;
+
+    overflow: hidden;
+
+    background-color: var(--surface-soft);
+}
+
+
+.product-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.5s ease;
+}
+
+
+.product-card:hover .product-image {
+
+    transform: scale(1.06);
+}
+
+
+.product-no-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    color: var(--text-muted);
+}
+
+
+.product-no-image i {
+
+    font-size: 2rem;
+}
+
+
+/* =========================================================
+   PRODUCT VIEW BUTTON
+========================================================= */
+
+.product-view-button {
+
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 9px 14px;
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: 0.8rem;
+
+    font-weight: 600;
+
+    box-shadow: var(--shadow);
+
+    opacity: 0;
+
+    transform:
+        translate(-50%, 15px);
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+}
+
+
+.product-card:hover .product-view-button {
+
+    opacity: 1;
+
+    transform:
+        translate(-50%, 0);
+}
+
+
+.product-view-button:hover {
+
+    background-color: var(--primary);
+
+    color: white;
+}
+
+
+/* =========================================================
+   PRODUCT INFORMATION
+========================================================= */
+
+.product-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 20px;
+}
+
+
+.product-brand {
+
+    margin-bottom: 6px;
+
+    color: var(--primary);
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
+}
+
+
+.product-name {
+
+    margin-bottom: 8px;
+
+    color: var(--text);
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+}
+
+
+.product-description {
+
+    min-height: 42px;
+
+    margin-bottom: 18px;
+
+    color: var(--text-muted);
+
+    font-size: 0.82rem;
+
+    line-height: 1.6;
+}
+
+
+.product-bottom {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: auto;
+}
+
+
+.product-price {
+
+    color: var(--text);
+
+    font-size: 1.1rem;
+
+    font-weight: 800;
+}
+
+
+.product-arrow {
+
+    width: 36px;
+
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color: var(--surface-soft);
+
+    color: var(--text);
+
+    border-radius: 50%;
+
+    text-decoration: none;
+}
+
+
+.product-arrow:hover {
+
+    background-color: var(--primary);
+
+    color: white;
+
+    transform:
+        rotate(45deg);
+}
+
+
+/* =========================================================
+   EMPTY PRODUCTS
+========================================================= */
+
+.empty-products {
+
+    padding: 70px 20px;
+
+    text-align: center;
+
+    background-color: var(--surface-soft);
+
+    border: 1px dashed var(--border);
+
+    border-radius: 16px;
+}
+
+
+.empty-products-icon {
+
+    width: 65px;
+
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 0 auto 18px;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 50%;
+
+    font-size: 1.5rem;
+}
+
+
+.empty-products h4 {
+
+    color: var(--text);
+}
+
+
+.empty-products p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+}
+
+
+/* =========================================================
+   WHY ALPHIX
+========================================================= */
+
+.why-alphix-section {
+
+    padding: 100px 0;
+
+    background-color: var(--background);
+}
+
+
+.feature-card {
+
+    height: 100%;
+
+    padding: 28px;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 15px;
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+.feature-card:hover {
+
+    transform:
+        translateY(-6px);
+
+    box-shadow: var(--shadow);
+}
+
+
+.feature-icon {
+
+    width: 50px;
+
+    height: 50px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 12px;
+
+    font-size: 1.3rem;
+}
+
+
+.feature-card h4 {
+
+    margin-bottom: 10px;
+
+    color: var(--text);
+
+    font-size: 1rem;
+
+    font-weight: 700;
+}
+
+
+.feature-card p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.85rem;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   CTA
+========================================================= */
+
+.home-cta-section {
+
+    padding: 80px 0;
+
+    background-color: var(--background);
+}
+
+
+.home-cta {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 40px;
+
+    padding: 55px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1d4ed8,
+            #2563eb
+        );
+
+    border-radius: 24px;
+
+    color: white;
+
+    box-shadow:
+        0 20px 45px
+        rgba(37, 99, 235, 0.22);
+}
+
+
+.home-cta .section-label {
+
+    color: #bfdbfe;
+}
+
+
+.home-cta h2 {
+
+    margin-bottom: 10px;
+
+    font-size: 2rem;
+
+    font-weight: 800;
+}
+
+
+.home-cta p {
+
+    max-width: 550px;
+
+    margin: 0;
+
+    color: #dbeafe;
+
+    line-height: 1.7;
+}
+
+
+.home-cta .btn-light {
+
+    flex-shrink: 0;
+
+    color: var(--primary);
+
+    border-radius: 9px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+[data-reveal] {
+
+    opacity: 0;
+
+    transform:
+        translateY(25px);
+
+    transition:
+        opacity 0.7s ease,
+        transform 0.7s ease;
+}
+
+
+[data-reveal].revealed {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+}
+
+
+@keyframes heroFloat {
+
+    0%,
+    100% {
+
+        transform:
+            translate(-50%, -50%)
+            translateY(0);
+    }
+
+    50% {
+
+        transform:
+            translate(-50%, -50%)
+            translateY(-12px);
+    }
+}
+
+
+@keyframes orbitRotate {
+
+    from {
+        transform:
+            translate(-50%, -50%)
+            rotate(0deg);
+    }
+
+    to {
+        transform:
+            translate(-50%, -50%)
+            rotate(360deg);
+    }
+}
+
+
+@keyframes orbitRotateReverse {
+
+    from {
+        transform:
+            translate(-50%, -50%)
+            rotate(360deg);
+    }
+
+    to {
+        transform:
+            translate(-50%, -50%)
+            rotate(0deg);
+    }
+}
+
+
+@keyframes floatingCardOne {
+
+    from {
+        transform:
+            translateY(0);
+    }
+
+    to {
+        transform:
+            translateY(-10px);
+    }
+}
+
+
+@keyframes floatingCardTwo {
+
+    from {
+        transform:
+            translateY(0);
+    }
+
+    to {
+        transform:
+            translateY(10px);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .alphix-hero {
+
+        min-height: auto;
+
+        padding: 90px 0;
+    }
+
+
+    .min-vh-75 {
+
+        min-height: auto;
+    }
+
+
+    .hero-title {
+
+        font-size: 3.5rem;
+    }
+
+
+    .featured-section,
+    .why-alphix-section {
+
+        padding: 75px 0;
+    }
+
+
+    .home-cta {
+
+        padding: 40px;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}
+
+
+@media (max-width: 767px) {
+
+    .alphix-hero {
+
+        padding: 70px 0;
+    }
+
+
+    .hero-title {
+
+        font-size: 2.8rem;
+
+        letter-spacing: -1.8px;
+    }
+
+
+    .hero-text {
+
+        font-size: 1rem;
+    }
+
+
+    .hero-trust {
+
+        gap: 15px;
+    }
+
+
+    .hero-trust-item {
+
+        font-size: 0.75rem;
+    }
+
+
+    .section-heading {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .section-heading h2,
+    .why-alphix-header h2 {
+
+        font-size: 1.7rem;
+    }
+
+
+    .featured-section,
+    .why-alphix-section {
+
+        padding: 65px 0;
+    }
+
+
+    .home-cta {
+
+        padding: 35px 25px;
+
+        border-radius: 18px;
+    }
+
+
+    .home-cta h2 {
+
+        font-size: 1.6rem;
+    }
+
+}
+
+
+@media (max-width: 575px) {
+
+    .hero-title {
+
+        font-size: 2.35rem;
+    }
+
+
+    .hero-actions {
+
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+
+    .hero-actions .btn {
+
+        width: 100%;
+    }
+
+
+    .hero-trust {
+
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+
+    .product-image-wrapper {
+
+        height: 240px;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    [data-reveal],
+    .hero-product-card,
+    .hero-orbit,
+    .floating-card {
+
+        animation: none !important;
+
+        transition: none !important;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* ==========================================
+           SCROLL REVEAL
+        ========================================== */
+
+        const revealElements =
+            document.querySelectorAll(
+                "[data-reveal]"
+            );
+
+
+        if (
+            "IntersectionObserver"
+            in window
+        ) {
+
+
+            const observer =
+                new IntersectionObserver(
+                    function (entries) {
+
+                        entries.forEach(
+                            function (entry) {
+
+                                if (
+                                    entry.isIntersecting
+                                ) {
+
+                                    entry.target.classList.add(
+                                        "revealed"
+                                    );
+
+                                    observer.unobserve(
+                                        entry.target
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    },
+                    {
+                        threshold: 0.12
+                    }
+                );
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    observer.observe(
+                        element
+                    );
+
+                }
+            );
+
+
+        } else {
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    element.classList.add(
+                        "revealed"
+                    );
+
+                }
+            );
+
+        }
+
+
+    }
+);
+
+</script>
 
 {% endblock %}

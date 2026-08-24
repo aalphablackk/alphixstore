@@ -1,32 +1,1335 @@
+/* =========================================================
+   ALPHIX STORE
+   GLOBAL STYLE
+========================================================= */
+
+
+/* =========================================================
+   1. BASIC LAYOUT
+========================================================= */
+
 html,
 body {
-
     min-height: 100vh;
+}
 
+body {
+    display: flex;
+    flex-direction: column;
+
+    margin: 0;
+
+    font-family: "Inter", Arial, sans-serif;
+
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+footer {
+    flex-shrink: 0;
 }
 
 
+/* =========================================================
+   2. LIGHT THEME
+========================================================= */
+
+:root {
+
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #dbeafe;
+
+    --success: #16a34a;
+    --warning: #f59e0b;
+    --danger: #dc2626;
+    --info: #0ea5e9;
+
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --surface-soft: #f1f5f9;
+
+    --text: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+
+    --border: #e2e8f0;
+
+    --shadow-sm:
+        0 2px 8px rgba(15, 23, 42, 0.05);
+
+    --shadow:
+        0 8px 25px rgba(15, 23, 42, 0.08);
+
+    --shadow-lg:
+        0 20px 45px rgba(15, 23, 42, 0.12);
+
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+}
+
+
+/* =========================================================
+   3. DARK THEME
+========================================================= */
+
+[data-theme="dark"] {
+
+    --background: #0b1120;
+    --surface: #111827;
+    --surface-soft: #1e293b;
+
+    --text: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+
+    --border: #263244;
+
+    --primary-light: #172554;
+
+    --shadow-sm:
+        0 2px 8px rgba(0, 0, 0, 0.25);
+
+    --shadow:
+        0 8px 25px rgba(0, 0, 0, 0.30);
+
+    --shadow-lg:
+        0 20px 45px rgba(0, 0, 0, 0.45);
+}
+
+
+/* =========================================================
+   4. GLOBAL
+========================================================= */
+
 body {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+a {
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+::selection {
+    background-color: var(--primary);
+    color: white;
+}
+
+
+/* =========================================================
+   5. NAVBAR
+========================================================= */
+
+.alphix-navbar {
+
+    background-color: var(--surface);
+
+    border-bottom: 1px solid var(--border);
+
+    transition:
+        background-color 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+
+    z-index: 1030;
+}
+
+.alphix-navbar.navbar-scrolled {
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* =========================================================
+   6. BRAND
+========================================================= */
+
+.alphix-brand {
+
+    color: var(--text) !important;
+
+    font-size: 1.2rem;
+
+    font-weight: 800;
+
+    letter-spacing: -0.5px;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+}
+
+.brand-highlight {
+    color: var(--primary);
+}
+
+.alphix-brand:hover {
+    color: var(--text) !important;
+}
+
+
+/* =========================================================
+   7. CENTER NAVIGATION
+========================================================= */
+
+.navbar-center {
+
+    position: absolute;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+}
+
+.navbar-center .navbar-nav {
 
     display: flex;
 
-    flex-direction: column;
+    align-items: center;
 
+    gap: 4px;
+
+    white-space: nowrap;
 }
 
 
+/* NAV LINKS */
 
-main {
+.alphix-navbar .nav-link {
 
-    flex: 1 0 auto;
+    position: relative;
 
+    padding: 9px 14px !important;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--text-secondary) !important;
+
+    font-size: 0.95rem;
+
+    font-weight: 500;
+
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+.alphix-navbar .nav-link:hover {
+
+    background-color: transparent;
+
+    color: var(--primary) !important;
 }
 
 
+/* ACTIVE LINK */
 
-footer {
+.alphix-navbar .nav-link.active {
+
+    color: var(--primary) !important;
+
+    font-weight: 600;
+}
+
+.alphix-navbar .nav-link.active::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 14px;
+
+    right: 14px;
+
+    bottom: 2px;
+
+    height: 2px;
+
+    background-color: var(--primary);
+
+    border-radius: 10px;
+}
+
+
+/* SEARCH BUTTON */
+
+.nav-search-button {
+
+    border: none !important;
+
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
+   8. CART
+========================================================= */
+
+.cart-nav-link {
+
+    display: inline-flex !important;
+
+    align-items: center;
+
+    gap: 6px;
+}
+
+.cart-count {
+
+    min-width: 18px;
+
+    height: 18px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0 5px;
+
+    background-color: var(--primary);
+
+    color: white;
+
+    border-radius: 50px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   9. RIGHT SIDE
+========================================================= */
+
+.navbar-right {
+
+    margin-left: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+/* ACCOUNT */
+
+.account-nav-button {
+
+    border: none !important;
+
+    background: transparent !important;
+
+    box-shadow: none !important;
+
+    color: var(--text-secondary) !important;
+
+    padding: 9px 10px !important;
+}
+
+.account-nav-button:hover {
+
+    color: var(--primary) !important;
+}
+
+
+/* =========================================================
+   10. THEME BUTTON
+========================================================= */
+
+.nav-icon-btn {
+
+    width: 40px;
+
+    height: 40px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    cursor: pointer;
+}
+
+.nav-icon-btn:hover {
+
+    color: var(--primary);
+
+    border-color: var(--primary);
+
+    background-color: var(--primary-light);
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   11. ACCOUNT DROPDOWN
+========================================================= */
+
+.account-menu {
+
+    min-width: 260px;
+
+    padding: 8px;
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border: 1px solid var(--border) !important;
+
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+}
+
+.account-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px;
+}
+
+.account-avatar {
+
+    width: 32px;
+
+    height: 32px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
 
     flex-shrink: 0;
 
+    border-radius: 50%;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    font-size: 0.8rem;
+
+    font-weight: 800;
 }
 
+.account-avatar-lg {
+
+    width: 44px;
+
+    height: 44px;
+}
+
+.account-menu .dropdown-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px 12px;
+
+    border-radius: 7px;
+
+    color: var(--text-secondary);
+}
+
+.account-menu .dropdown-item:hover {
+
+    background-color: var(--surface-soft);
+
+    color: var(--primary);
+}
+
+.account-menu .dropdown-item i {
+    width: 20px;
+}
+
+
+/* =========================================================
+   12. BUTTONS
+========================================================= */
+
+.btn {
+
+    border-radius: 9px;
+
+    font-weight: 600;
+
+    padding: 9px 17px;
+}
+
+.btn-primary {
+
+    background-color: var(--primary);
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.btn-primary:hover {
+
+    background-color: var(--primary-dark);
+
+    border-color: var(--primary-dark);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px rgba(37, 99, 235, 0.22);
+}
+
+.btn-outline-primary {
+
+    color: var(--primary);
+
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+
+    background-color: var(--primary);
+
+    border-color: var(--primary);
+
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   13. CARDS
+========================================================= */
+
+.card {
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border-color: var(--border) !important;
+
+    border-radius: var(--radius-lg);
+
+    transition:
+        box-shadow 0.3s ease,
+        transform 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* =========================================================
+   14. FORMS
+========================================================= */
+
+.form-control,
+.form-select {
+
+    min-height: 44px;
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.form-control:focus,
+.form-select:focus {
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.form-label {
+
+    color: var(--text);
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   15. TABLES
+========================================================= */
+
+.table {
+
+    --bs-table-bg: transparent;
+
+    --bs-table-color: var(--text);
+
+    --bs-table-border-color: var(--border);
+}
+
+.table-light {
+
+    --bs-table-bg: var(--surface-soft);
+
+    --bs-table-color: var(--text);
+}
+
+.table > :not(caption) > * > * {
+    padding: 14px;
+}
+
+.table-hover > tbody > tr:hover > * {
+    --bs-table-accent-bg: var(--surface-soft);
+}
+
+
+/* =========================================================
+   16. BADGES
+========================================================= */
+
+.badge {
+
+    padding: 6px 10px;
+
+    border-radius: 50px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   17. ALERTS
+========================================================= */
+
+.message-container {
+
+    position: relative;
+
+    z-index: 1020;
+
+    padding-top: 15px;
+}
+
+.alert {
+
+    border-radius: 10px;
+
+    border: 1px solid var(--border);
+}
+
+
+/* =========================================================
+   18. MODALS
+========================================================= */
+
+.modal-content {
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--border);
+}
+
+[data-theme="dark"] .btn-close {
+    filter: invert(1);
+}
+
+
+/* =========================================================
+   19. DROPDOWNS
+========================================================= */
+
+.dropdown-menu {
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border-color: var(--border);
+}
+
+.dropdown-divider {
+    border-color: var(--border);
+}
+
+
+/* =========================================================
+   20. FOOTER
+========================================================= */
+
+.alphix-footer {
+
+    margin-top: auto;
+
+    background-color: #111827;
+
+    color: #cbd5e1;
+}
+
+.footer-brand {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    color: white;
+
+    font-weight: 800;
+
+    text-decoration: none;
+}
+
+.footer-brand .brand-highlight {
+    margin-left: 4px;
+}
+
+.footer-description {
+
+    max-width: 420px;
+
+    color: #94a3b8;
+
+    line-height: 1.7;
+}
+
+.footer-heading {
+
+    color: white;
+
+    margin-bottom: 15px;
+
+    font-weight: 700;
+}
+
+.footer-links {
+
+    list-style: none;
+
+    padding: 0;
+
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 9px;
+}
+
+.footer-links a {
+
+    color: #94a3b8;
+
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+
+    color: #60a5fa;
+
+    padding-left: 3px;
+}
+
+.footer-social {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid #334155;
+
+    border-radius: 8px;
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+}
+
+.footer-social:hover {
+
+    background-color: var(--primary);
+
+    border-color: var(--primary);
+
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+.footer-divider {
+    border-color: #334155;
+}
+
+.footer-copyright,
+.footer-powered {
+    color: #64748b;
+}
+
+
+/* =========================================================
+   21. PAGE LOADER
+========================================================= */
+
+.page-loader {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color: var(--background);
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+}
+
+.page-loader-hidden {
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   22. UTILITIES
+========================================================= */
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.bg-light {
+    background-color: var(--surface-soft) !important;
+}
+
+.border {
+    border-color: var(--border) !important;
+}
+
+.hover-lift {
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow: var(--shadow);
+}
+
+.img-hover {
+    overflow: hidden;
+
+    border-radius: var(--radius);
+}
+
+.img-hover img {
+    transition:
+        transform 0.4s ease;
+}
+
+.img-hover:hover img {
+    transform: scale(1.05);
+}
+
+
+/* =========================================================
+   23. RESPONSIVE NAVBAR
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .alphix-navbar .navbar-collapse {
+        padding: 15px 0;
+    }
+
+
+    .navbar-center {
+
+        position: static;
+
+        transform: none;
+
+        width: 100%;
+    }
+
+
+    .navbar-center .navbar-nav {
+
+        align-items: flex-start;
+
+        width: 100%;
+
+        gap: 0;
+    }
+
+
+    .alphix-navbar .nav-item {
+        width: 100%;
+    }
+
+
+    .alphix-navbar .nav-link {
+
+        width: 100%;
+
+        text-align: left;
+
+        padding: 10px 5px !important;
+    }
+
+
+    .alphix-navbar .nav-link.active::after {
+
+        left: 5px;
+
+        right: auto;
+
+        width: 30px;
+    }
+
+
+    .navbar-right {
+
+        width: 100%;
+
+        margin-top: 15px;
+
+        padding-top: 15px;
+
+        border-top: 1px solid var(--border);
+
+        justify-content: flex-end;
+    }
+
+
+    .account-nav-button {
+        width: auto !important;
+    }
+
+}
+
+
+/* =========================================================
+   24. SMALL SCREENS
+========================================================= */
+
+@media (max-width: 576px) {
+
+    .alphix-brand {
+        font-size: 1.05rem;
+    }
+
+
+    .nav-icon-btn {
+
+        width: 38px;
+
+        height: 38px;
+    }
+
+
+    .message-container {
+
+        padding-left: 15px;
+
+        padding-right: 15px;
+    }
+
+}
+
+
+
+
+
+
+
+
+/* =========================================================
+   DYNAMIC BUBBLE BACKGROUND
+========================================================= */
+
+body {
+    position: relative;
+    overflow-x: hidden;
+}
+
+
+/* Keep actual content above the background */
+
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+
+    pointer-events: none;
+
+    z-index: -1;
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   LARGE FLOATING BUBBLE
+========================================================= */
+
+body::before {
+
+    width: 320px;
+    height: 320px;
+
+    top: 12%;
+    left: -120px;
+
+    background:
+        radial-gradient(
+            circle at 35% 35%,
+            rgba(59, 130, 246, 0.30),
+            rgba(37, 99, 235, 0.10) 45%,
+            transparent 72%
+        );
+
+    filter: blur(8px);
+
+    animation:
+        alphixBubbleOne 20s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   SECOND BUBBLE
+========================================================= */
+
+body::after {
+
+    width: 260px;
+    height: 260px;
+
+    right: -80px;
+    bottom: 15%;
+
+    background:
+        radial-gradient(
+            circle at 40% 40%,
+            rgba(96, 165, 250, 0.28),
+            rgba(37, 99, 235, 0.08) 50%,
+            transparent 75%
+        );
+
+    filter: blur(7px);
+
+    animation:
+        alphixBubbleTwo 24s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   EXTRA FLOATING BUBBLES
+========================================================= */
+
+main {
+    position: relative;
+}
+
+main::before,
+main::after {
+
+    content: "";
+
+    position: fixed;
+
+    pointer-events: none;
+
+    z-index: -1;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 35% 30%,
+            rgba(59, 130, 246, 0.20),
+            rgba(59, 130, 246, 0.04) 55%,
+            transparent 75%
+        );
+
+    filter: blur(4px);
+}
+
+
+/* Bubble 3 */
+
+main::before {
+
+    width: 140px;
+    height: 140px;
+
+    top: 45%;
+    right: 18%;
+
+    animation:
+        alphixBubbleThree 17s ease-in-out infinite alternate;
+}
+
+
+/* Bubble 4 */
+
+main::after {
+
+    width: 90px;
+    height: 90px;
+
+    top: 25%;
+    left: 25%;
+
+    animation:
+        alphixBubbleFour 15s ease-in-out infinite alternate;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+========================================================= */
+
+[data-theme="light"] body::before,
+[data-theme="light"] body::after {
+
+    opacity: 1;
+}
+
+
+[data-theme="light"] main::before,
+[data-theme="light"] main::after {
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+[data-theme="dark"] body::before,
+[data-theme="dark"] body::after {
+
+    opacity: 1;
+}
+
+
+[data-theme="dark"] main::before,
+[data-theme="dark"] main::after {
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   BUBBLE ANIMATION 1
+========================================================= */
+
+@keyframes alphixBubbleOne {
+
+    0% {
+        transform:
+            translate(0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate(180px, 80px)
+            scale(1.12);
+    }
+
+    100% {
+        transform:
+            translate(80px, 230px)
+            scale(0.92);
+    }
+}
+
+
+/* =========================================================
+   BUBBLE ANIMATION 2
+========================================================= */
+
+@keyframes alphixBubbleTwo {
+
+    0% {
+        transform:
+            translate(0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate(-130px, -100px)
+            scale(1.15);
+    }
+
+    100% {
+        transform:
+            translate(-220px, 50px)
+            scale(0.90);
+    }
+}
+
+
+/* =========================================================
+   BUBBLE ANIMATION 3
+========================================================= */
+
+@keyframes alphixBubbleThree {
+
+    0% {
+        transform:
+            translate(0, 0);
+    }
+
+    50% {
+        transform:
+            translate(-80px, 60px);
+    }
+
+    100% {
+        transform:
+            translate(50px, -80px);
+    }
+}
+
+
+/* =========================================================
+   BUBBLE ANIMATION 4
+========================================================= */
+
+@keyframes alphixBubbleFour {
+
+    0% {
+        transform:
+            translate(0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate(70px, -50px)
+            scale(1.15);
+    }
+
+    100% {
+        transform:
+            translate(-30px, 80px)
+            scale(0.90);
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    body::before,
+    body::after,
+    main::before,
+    main::after {
+
+        animation: none;
+    }
+
+}

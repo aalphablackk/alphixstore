@@ -1,0 +1,1375 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+{% load humanize %}
+
+
+{% block title %}
+    Checkout | Alphix Store
+{% endblock %}
+
+
+
+{% block content %}
+
+<section class="checkout-section">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+
+        <div
+            class="checkout-header"
+            data-reveal
+        >
+
+            <div>
+
+                <span class="section-label">
+                    Almost There
+                </span>
+
+                <h1>
+                    Checkout
+                </h1>
+
+                <p>
+                    Confirm your delivery information and review
+                    your order before placing it.
+                </p>
+
+            </div>
+
+
+            <div class="checkout-step">
+
+                <span class="step-active">
+                    1
+                </span>
+
+                <span class="step-line"></span>
+
+                <span>
+                    2
+                </span>
+
+                <small>
+                    Order Confirmation
+                </small>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="row g-4 align-items-start">
+
+
+            <!-- =================================================
+                 DELIVERY INFORMATION
+            ================================================== -->
+
+            <div
+                class="col-lg-7"
+                data-reveal
+            >
+
+                <div class="checkout-card">
+
+
+                    <div class="checkout-card-header">
+
+                        <div class="checkout-card-icon">
+
+                            <i class="bi bi-truck"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Delivery Information
+                            </h2>
+
+                            <p>
+                                Where should we deliver your order?
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="checkout-card-body">
+
+
+                        <form method="POST">
+
+                            {% csrf_token %}
+
+
+                            {{ form|crispy }}
+
+
+                            <div class="checkout-actions">
+
+
+                                <a
+                                    href="{% url 'cart' %}"
+                                    class="checkout-back"
+                                >
+
+                                    <i class="bi bi-arrow-left"></i>
+
+                                    Back to Cart
+
+                                </a>
+
+
+                                <button
+                                    type="submit"
+                                    class="place-order-button"
+                                >
+
+                                    <span>
+                                        Place Order
+                                    </span>
+
+                                    <i class="bi bi-arrow-right"></i>
+
+                                </button>
+
+
+                            </div>
+
+
+                        </form>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- SECURITY -->
+
+                <div class="checkout-security">
+
+
+                    <div class="checkout-security-icon">
+
+                        <i class="bi bi-shield-check"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Your information is secure
+                        </strong>
+
+                        <p>
+                            Your delivery information is only used
+                            to process and fulfil your order.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ORDER SUMMARY
+            ================================================== -->
+
+            <div
+                class="col-lg-5"
+                data-reveal
+            >
+
+                <aside class="checkout-summary">
+
+
+                    <div class="checkout-summary-header">
+
+                        <div>
+
+                            <span class="section-label">
+                                Your Order
+                            </span>
+
+                            <h2>
+                                Order Summary
+                            </h2>
+
+                        </div>
+
+
+                        <span class="checkout-item-count">
+
+                            {{ cart_products|length }}
+                            item{{ cart_products|length|pluralize }}
+
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- PRODUCTS -->
+
+                    <div class="checkout-products">
+
+
+                        {% for item in cart_products %}
+
+
+                            <div class="checkout-product">
+
+
+                                <div class="checkout-product-image">
+
+
+                                    {% if item.cover_image %}
+
+                                        <img
+                                            src="{{ item.cover_image.image.url }}"
+                                            alt="{{ item.product.name }}"
+                                        >
+
+                                    {% else %}
+
+                                        <div class="checkout-no-image">
+
+                                            <i class="bi bi-image"></i>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+
+                                <div class="checkout-product-info">
+
+                                    <h3>
+                                        {{ item.product.name }}
+                                    </h3>
+
+                                    <span>
+
+                                        ₦{{ item.product.price|intcomma }}
+
+                                        ×
+
+                                        {{ item.quantity }}
+
+                                    </span>
+
+                                </div>
+
+
+
+                                <strong class="checkout-product-subtotal">
+
+                                    ₦{{ item.subtotal|intcomma }}
+
+                                </strong>
+
+
+                            </div>
+
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+
+                    <div class="checkout-divider"></div>
+
+
+
+                    <!-- TOTALS -->
+
+                    <div class="checkout-total-row">
+
+                        <span>
+                            Subtotal
+                        </span>
+
+                        <strong>
+                            ₦{{ total_amount|intcomma }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="checkout-total-row">
+
+                        <span>
+                            Delivery
+                        </span>
+
+                        <span class="checkout-muted">
+                            Calculated later
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="checkout-divider"></div>
+
+
+
+                    <div class="checkout-grand-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong>
+                            ₦{{ total_amount|intcomma }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="checkout-summary-note">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        Delivery charges, if applicable, will be
+                        handled separately.
+
+                    </div>
+
+
+                </aside>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}
+
+
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   CHECKOUT SECTION
+========================================================= */
+
+.checkout-section {
+
+    padding: 55px 0 100px;
+
+    background-color: var(--background);
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.checkout-header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 40px;
+
+}
+
+
+.checkout-header h1 {
+
+    margin: 5px 0 8px;
+
+    color: var(--text);
+
+    font-size: clamp(
+        2.2rem,
+        4vw,
+        3rem
+    );
+
+    font-weight: 800;
+
+    letter-spacing: -1.5px;
+
+}
+
+
+.checkout-header p {
+
+    max-width: 600px;
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.9rem;
+
+    line-height: 1.7;
+
+}
+
+
+/* =========================================================
+   CHECKOUT STEPS
+========================================================= */
+
+.checkout-step {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--text-muted);
+
+    font-size: 0.75rem;
+
+}
+
+
+.checkout-step > span {
+
+    width: 28px;
+
+    height: 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid var(--border);
+
+    border-radius: 50%;
+
+}
+
+
+.checkout-step .step-active {
+
+    background-color: var(--primary);
+
+    color: white;
+
+    border-color: var(--primary);
+
+    font-weight: 700;
+
+}
+
+
+.step-line {
+
+    width: 35px;
+
+    height: 1px;
+
+    background-color: var(--border);
+
+}
+
+
+.checkout-step small {
+
+    display: none;
+
+}
+
+
+/* =========================================================
+   CHECKOUT CARD
+========================================================= */
+
+.checkout-card {
+
+    overflow: hidden;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
+
+    box-shadow: var(--shadow-sm);
+
+}
+
+
+.checkout-card-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 25px;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.checkout-card-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 12px;
+
+    font-size: 1.25rem;
+
+}
+
+
+.checkout-card-header h2 {
+
+    margin: 0 0 4px;
+
+    color: var(--text);
+
+    font-size: 1.1rem;
+
+    font-weight: 800;
+
+}
+
+
+.checkout-card-header p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.78rem;
+
+}
+
+
+.checkout-card-body {
+
+    padding: 28px;
+
+}
+
+
+/* =========================================================
+   CRISPY FORMS
+========================================================= */
+
+.checkout-card-body label {
+
+    color: var(--text);
+
+    font-size: 0.82rem;
+
+    font-weight: 600;
+
+}
+
+
+.checkout-card-body .form-control,
+.checkout-card-body .form-select {
+
+    min-height: 45px;
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border-color: var(--border);
+
+    border-radius: 8px;
+
+}
+
+
+.checkout-card-body .form-control:focus,
+.checkout-card-body .form-select:focus {
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.10);
+
+}
+
+
+.checkout-card-body .form-text {
+
+    color: var(--text-muted);
+
+}
+
+
+.checkout-card-body .invalid-feedback {
+
+    font-size: 0.75rem;
+
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.checkout-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 28px;
+
+}
+
+
+.checkout-back {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 12px 16px;
+
+    color: var(--text-secondary);
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    font-size: 0.82rem;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+
+.checkout-back:hover {
+
+    background-color: var(--surface-soft);
+
+    color: var(--text);
+
+    transform:
+        translateX(-2px);
+
+}
+
+
+.place-order-button {
+
+    flex: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    padding: 13px 18px;
+
+    background-color: var(--primary);
+
+    color: white;
+
+    border: none;
+
+    border-radius: 9px;
+
+    font-size: 0.85rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.place-order-button i {
+
+    margin-left: auto;
+
+}
+
+
+.place-order-button:hover {
+
+    background-color: var(--primary-dark);
+
+    color: white;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 99, 235, 0.20);
+
+}
+
+
+/* =========================================================
+   SECURITY
+========================================================= */
+
+.checkout-security {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    margin-top: 15px;
+
+    padding: 16px;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+}
+
+
+.checkout-security-icon {
+
+    width: 36px;
+
+    height: 36px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 9px;
+
+}
+
+
+.checkout-security strong {
+
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: var(--text);
+
+    font-size: 0.78rem;
+
+}
+
+
+.checkout-security p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.7rem;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.checkout-summary {
+
+    position: sticky;
+
+    top: 100px;
+
+    padding: 25px;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
+
+    box-shadow: var(--shadow-sm);
+
+}
+
+
+.checkout-summary-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.checkout-summary-header h2 {
+
+    margin: 5px 0 0;
+
+    color: var(--text);
+
+    font-size: 1.25rem;
+
+    font-weight: 800;
+
+}
+
+
+.checkout-item-count {
+
+    padding: 6px 9px;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 50px;
+
+    font-size: 0.68rem;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================================
+   CHECKOUT PRODUCTS
+========================================================= */
+
+.checkout-products {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+
+}
+
+
+.checkout-product {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+.checkout-product-image {
+
+    width: 60px;
+
+    height: 60px;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    background-color: var(--surface-soft);
+
+    border-radius: 9px;
+
+}
+
+
+.checkout-product-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+}
+
+
+.checkout-no-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: var(--text-muted);
+
+}
+
+
+.checkout-product-info {
+
+    min-width: 0;
+
+    flex: 1;
+
+}
+
+
+.checkout-product-info h3 {
+
+    margin: 0 0 4px;
+
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+.checkout-product-info span {
+
+    color: var(--text-muted);
+
+    font-size: 0.7rem;
+
+}
+
+
+.checkout-product-subtotal {
+
+    color: var(--text);
+
+    font-size: 0.78rem;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================================
+   DIVIDERS
+========================================================= */
+
+.checkout-divider {
+
+    height: 1px;
+
+    margin: 22px 0;
+
+    background-color: var(--border);
+
+}
+
+
+/* =========================================================
+   TOTALS
+========================================================= */
+
+.checkout-total-row {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 16px;
+
+    color: var(--text-secondary);
+
+    font-size: 0.82rem;
+
+}
+
+
+.checkout-total-row strong {
+
+    color: var(--text);
+
+}
+
+
+.checkout-muted {
+
+    color: var(--text-muted);
+
+    font-size: 0.72rem;
+
+    text-align: right;
+
+}
+
+
+.checkout-grand-total {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+}
+
+
+.checkout-grand-total span {
+
+    color: var(--text);
+
+    font-size: 0.95rem;
+
+    font-weight: 700;
+
+}
+
+
+.checkout-grand-total strong {
+
+    color: var(--primary);
+
+    font-size: 1.35rem;
+
+    font-weight: 800;
+
+}
+
+
+.checkout-summary-note {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 7px;
+
+    margin-top: 20px;
+
+    padding: 12px;
+
+    background-color: var(--surface-soft);
+
+    color: var(--text-muted);
+
+    border-radius: 8px;
+
+    font-size: 0.68rem;
+
+    line-height: 1.5;
+
+}
+
+
+.checkout-summary-note i {
+
+    color: var(--primary);
+
+    margin-top: 1px;
+
+}
+
+
+/* =========================================================
+   SCROLL REVEAL
+========================================================= */
+
+[data-reveal] {
+
+    opacity: 0;
+
+    transform:
+        translateY(20px);
+
+    transition:
+        opacity 0.6s ease,
+        transform 0.6s ease;
+
+}
+
+
+[data-reveal].revealed {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .checkout-summary {
+
+        position: static;
+
+    }
+
+}
+
+
+@media (max-width: 767px) {
+
+    .checkout-section {
+
+        padding: 45px 0 70px;
+
+    }
+
+
+    .checkout-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 20px;
+
+    }
+
+
+    .checkout-card-body {
+
+        padding: 22px;
+
+    }
+
+
+    .checkout-actions {
+
+        flex-direction: column-reverse;
+
+        align-items: stretch;
+
+    }
+
+
+    .checkout-back,
+    .place-order-button {
+
+        width: 100%;
+
+    }
+
+
+    .checkout-summary {
+
+        padding: 22px;
+
+    }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    [data-reveal] {
+
+        transition: none;
+
+    }
+
+}
+
+</style>
+
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const revealElements =
+            document.querySelectorAll(
+                "[data-reveal]"
+            );
+
+
+        if (
+            "IntersectionObserver"
+            in window
+        ) {
+
+
+            const observer =
+                new IntersectionObserver(
+                    function (entries) {
+
+                        entries.forEach(
+                            function (entry) {
+
+                                if (
+                                    entry.isIntersecting
+                                ) {
+
+                                    entry.target.classList.add(
+                                        "revealed"
+                                    );
+
+                                    observer.unobserve(
+                                        entry.target
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    },
+                    {
+                        threshold: 0.08
+                    }
+                );
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    observer.observe(
+                        element
+                    );
+
+                }
+            );
+
+
+        } else {
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    element.classList.add(
+                        "revealed"
+                    );
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+{% endblock %}

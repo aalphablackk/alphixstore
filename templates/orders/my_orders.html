@@ -1,0 +1,1262 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+
+{% block title %}
+    My Orders | Alphix Store
+{% endblock %}
+
+
+
+{% block content %}
+
+<section class="orders-section">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             PAGE HEADER
+        ====================================================== -->
+
+        <div
+            class="orders-header"
+            data-reveal
+        >
+
+            <div>
+
+                <span class="section-label">
+                    Your Shopping History
+                </span>
+
+                <h1>
+                    My Orders
+                </h1>
+
+                <p>
+                    View your previous purchases and track
+                    the progress of your orders.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'all_products' %}"
+                class="orders-shop-button"
+            >
+
+                <i class="bi bi-bag"></i>
+
+                Continue Shopping
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+
+        {% if orders %}
+
+
+            <!-- =================================================
+                 ORDER LIST
+            ================================================== -->
+
+            <div class="orders-list">
+
+
+                {% for order in orders %}
+
+
+                    <article
+                        class="order-card"
+                        data-reveal
+                    >
+
+
+                        <!-- =====================================
+                             ORDER HEADER
+                        ====================================== -->
+
+                        <div class="order-card-header">
+
+
+                            <div class="order-number-section">
+
+                                <span class="order-label">
+                                    Order Number
+                                </span>
+
+
+                                <a
+                                    href="{% url 'order_detail' order.order_number %}"
+                                    class="order-number"
+                                >
+
+                                    {{ order.order_number }}
+
+                                </a>
+
+                            </div>
+
+
+
+                            <div class="order-date">
+
+                                <i class="bi bi-calendar3"></i>
+
+                                {{ order.created_at|date:"M d, Y" }}
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- =====================================
+                             ORDER INFORMATION
+                        ====================================== -->
+
+                        <div class="order-card-body">
+
+
+                            <!-- TOTAL -->
+
+                            <div class="order-info-block">
+
+                                <span class="order-label">
+                                    Total
+                                </span>
+
+
+                                <strong class="order-total">
+
+                                    ₦{{ order.total_amount|intcomma }}
+
+                                </strong>
+
+                            </div>
+
+
+
+                            <!-- PAYMENT -->
+
+                            <div class="order-info-block">
+
+                                <span class="order-label">
+                                    Payment
+                                </span>
+
+
+                                {% if order.payment_status == "PAID" %}
+
+                                    <span class="order-status payment-paid">
+
+                                        <i class="bi bi-check-circle-fill"></i>
+
+                                        Paid
+
+                                    </span>
+
+                                {% elif order.payment_status == "FAILED" %}
+
+                                    <span class="order-status payment-failed">
+
+                                        <i class="bi bi-x-circle-fill"></i>
+
+                                        Failed
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="order-status payment-pending">
+
+                                        <i class="bi bi-clock-fill"></i>
+
+                                        Pending
+
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- ORDER STATUS -->
+
+                            <div class="order-info-block">
+
+                                <span class="order-label">
+                                    Order Status
+                                </span>
+
+
+                                {% if order.status == "PENDING" %}
+
+                                    <span class="order-status status-pending">
+
+                                        <span class="status-dot"></span>
+
+                                        Pending
+
+                                    </span>
+
+                                {% elif order.status == "PROCESSING" %}
+
+                                    <span class="order-status status-processing">
+
+                                        <span class="status-dot"></span>
+
+                                        Processing
+
+                                    </span>
+
+                                {% elif order.status == "SHIPPED" %}
+
+                                    <span class="order-status status-shipped">
+
+                                        <span class="status-dot"></span>
+
+                                        Shipped
+
+                                    </span>
+
+                                {% elif order.status == "DELIVERED" %}
+
+                                    <span class="order-status status-delivered">
+
+                                        <span class="status-dot"></span>
+
+                                        Delivered
+
+                                    </span>
+
+                                {% elif order.status == "CANCELLED" %}
+
+                                    <span class="order-status status-cancelled">
+
+                                        <span class="status-dot"></span>
+
+                                        Cancelled
+
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- VIEW -->
+
+                            <div class="order-view-section">
+
+                                <a
+                                    href="{% url 'order_detail' order.order_number %}"
+                                    class="order-view-button"
+                                >
+
+                                    View Order
+
+                                    <i class="bi bi-arrow-right"></i>
+
+                                </a>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </article>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- =================================================
+                 EMPTY ORDERS
+            ================================================== -->
+
+            <div
+                class="orders-empty"
+                data-reveal
+            >
+
+
+                <div class="orders-empty-icon">
+
+                    <i class="bi bi-bag-x"></i>
+
+                </div>
+
+
+                <span class="section-label">
+                    Nothing here yet
+                </span>
+
+
+                <h2>
+                    No orders yet
+                </h2>
+
+
+                <p>
+                    You haven't placed any orders yet.
+                    Find something you like and your purchases
+                    will appear here.
+                </p>
+
+
+                <a
+                    href="{% url 'all_products' %}"
+                    class="btn btn-primary orders-empty-button"
+                >
+
+                    <i class="bi bi-bag me-2"></i>
+
+                    Start Shopping
+
+                    <i class="bi bi-arrow-right ms-2"></i>
+
+                </a>
+
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}
+
+
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   ORDERS SECTION
+========================================================= */
+
+.orders-section {
+
+    padding: 55px 0 100px;
+
+    background-color: var(--background);
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.orders-header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 40px;
+
+}
+
+
+.orders-header h1 {
+
+    margin: 5px 0 8px;
+
+    color: var(--text);
+
+    font-size: clamp(
+        2.2rem,
+        4vw,
+        3rem
+    );
+
+    font-weight: 800;
+
+    letter-spacing: -1.5px;
+
+}
+
+
+.orders-header p {
+
+    max-width: 600px;
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.9rem;
+
+    line-height: 1.7;
+
+}
+
+
+/* =========================================================
+   SHOP BUTTON
+========================================================= */
+
+.orders-shop-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 12px 17px;
+
+    background-color: var(--primary);
+
+    color: white;
+
+    border-radius: 9px;
+
+    font-size: 0.8rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.orders-shop-button i:last-child {
+
+    margin-left: 4px;
+
+}
+
+
+.orders-shop-button:hover {
+
+    background-color: var(--primary-dark);
+
+    color: white;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 99, 235, 0.20);
+
+}
+
+
+/* =========================================================
+   ORDER LIST
+========================================================= */
+
+.orders-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+}
+
+
+/* =========================================================
+   ORDER CARD
+========================================================= */
+
+.order-card {
+
+    overflow: hidden;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 15px;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+
+}
+
+
+.order-card:hover {
+
+    transform:
+        translateY(-3px);
+
+    box-shadow: var(--shadow);
+
+    border-color:
+        rgba(37, 99, 235, 0.20);
+
+}
+
+
+/* =========================================================
+   ORDER HEADER
+========================================================= */
+
+.order-card-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 18px 22px;
+
+    background-color: var(--surface-soft);
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.order-number-section {
+
+    min-width: 0;
+
+}
+
+
+.order-label {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 0.67rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.3px;
+
+}
+
+
+.order-number {
+
+    color: var(--primary);
+
+    font-size: 0.83rem;
+
+    font-weight: 800;
+
+    text-decoration: none;
+
+}
+
+
+.order-number:hover {
+
+    color: var(--primary-dark);
+
+    text-decoration: underline;
+
+}
+
+
+.order-date {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: var(--text-muted);
+
+    font-size: 0.75rem;
+
+}
+
+
+.order-date i {
+
+    color: var(--primary);
+
+}
+
+
+/* =========================================================
+   ORDER BODY
+========================================================= */
+
+.order-card-body {
+
+    display: grid;
+
+    grid-template-columns:
+        1.2fr
+        1fr
+        1.2fr
+        auto;
+
+    align-items: center;
+
+    gap: 25px;
+
+    padding: 22px;
+
+}
+
+
+.order-info-block {
+
+    min-width: 0;
+
+}
+
+
+.order-total {
+
+    color: var(--text);
+
+    font-size: 1rem;
+
+    font-weight: 800;
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.order-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    width: fit-content;
+
+    padding: 6px 9px;
+
+    border-radius: 50px;
+
+    font-size: 0.68rem;
+
+    font-weight: 700;
+
+}
+
+
+.order-status i {
+
+    font-size: 0.65rem;
+
+}
+
+
+/* PAYMENT */
+
+.payment-paid {
+
+    background-color: #dcfce7;
+
+    color: #15803d;
+
+}
+
+
+.payment-failed {
+
+    background-color: #fee2e2;
+
+    color: #b91c1c;
+
+}
+
+
+.payment-pending {
+
+    background-color: #fef3c7;
+
+    color: #a16207;
+
+}
+
+
+/* ORDER STATUS */
+
+.status-pending {
+
+    background-color: #fef3c7;
+
+    color: #a16207;
+
+}
+
+
+.status-processing {
+
+    background-color: #dbeafe;
+
+    color: #1d4ed8;
+
+}
+
+
+.status-shipped {
+
+    background-color: #e0e7ff;
+
+    color: #4338ca;
+
+}
+
+
+.status-delivered {
+
+    background-color: #dcfce7;
+
+    color: #15803d;
+
+}
+
+
+.status-cancelled {
+
+    background-color: #fee2e2;
+
+    color: #b91c1c;
+
+}
+
+
+/* DARK MODE STATUS */
+
+[data-theme="dark"]
+.payment-paid,
+[data-theme="dark"]
+.status-delivered {
+
+    background-color: #14532d;
+
+    color: #86efac;
+
+}
+
+
+[data-theme="dark"]
+.payment-failed,
+[data-theme="dark"]
+.status-cancelled {
+
+    background-color: #450a0a;
+
+    color: #fca5a5;
+
+}
+
+
+[data-theme="dark"]
+.payment-pending,
+[data-theme="dark"]
+.status-pending {
+
+    background-color: #713f12;
+
+    color: #fde68a;
+
+}
+
+
+[data-theme="dark"]
+.status-processing {
+
+    background-color: #1e3a8a;
+
+    color: #bfdbfe;
+
+}
+
+
+[data-theme="dark"]
+.status-shipped {
+
+    background-color: #312e81;
+
+    color: #c7d2fe;
+
+}
+
+
+/* =========================================================
+   STATUS DOT
+========================================================= */
+
+.status-dot {
+
+    width: 6px;
+
+    height: 6px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background-color: currentColor;
+
+}
+
+
+/* =========================================================
+   VIEW ORDER
+========================================================= */
+
+.order-view-section {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+}
+
+
+.order-view-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 9px 12px;
+
+    color: var(--primary);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+
+.order-view-button:hover {
+
+    background-color: var(--primary);
+
+    color: white;
+
+    border-color: var(--primary);
+
+    transform:
+        translateX(2px);
+
+}
+
+
+.order-view-button i {
+
+    transition:
+        transform 0.2s ease;
+
+}
+
+
+.order-view-button:hover i {
+
+    transform:
+        translateX(3px);
+
+}
+
+
+/* =========================================================
+   EMPTY ORDERS
+========================================================= */
+
+.orders-empty {
+
+    max-width: 650px;
+
+    margin: 40px auto 0;
+
+    padding: 75px 30px;
+
+    text-align: center;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 20px;
+
+    box-shadow: var(--shadow-sm);
+
+}
+
+
+.orders-empty-icon {
+
+    width: 90px;
+
+    height: 90px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 0 auto 25px;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 50%;
+
+    font-size: 2.2rem;
+
+}
+
+
+.orders-empty h2 {
+
+    margin: 8px 0 10px;
+
+    color: var(--text);
+
+    font-size: 1.7rem;
+
+    font-weight: 800;
+
+}
+
+
+.orders-empty p {
+
+    max-width: 460px;
+
+    margin: 0 auto 25px;
+
+    color: var(--text-muted);
+
+    font-size: 0.9rem;
+
+    line-height: 1.7;
+
+}
+
+
+.orders-empty-button {
+
+    padding: 11px 20px;
+
+    border-radius: 9px;
+
+}
+
+
+/* =========================================================
+   SCROLL REVEAL
+========================================================= */
+
+[data-reveal] {
+
+    opacity: 0;
+
+    transform:
+        translateY(20px);
+
+    transition:
+        opacity 0.6s ease,
+        transform 0.6s ease;
+
+}
+
+
+[data-reveal].revealed {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .order-card-body {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 22px;
+
+    }
+
+
+    .order-view-section {
+
+        justify-content: flex-start;
+
+    }
+
+}
+
+
+@media (max-width: 767px) {
+
+    .orders-section {
+
+        padding: 45px 0 70px;
+
+    }
+
+
+    .orders-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 18px;
+
+    }
+
+
+    .orders-shop-button {
+
+        width: 100%;
+
+        justify-content: center;
+
+    }
+
+
+    .order-card-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+        padding: 17px;
+
+    }
+
+
+    .order-card-body {
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 20px;
+
+        padding: 18px;
+
+    }
+
+
+    .order-view-section {
+
+        grid-column: 1 / -1;
+
+    }
+
+
+    .order-view-button {
+
+        width: 100%;
+
+        justify-content: center;
+
+    }
+
+
+    .orders-empty {
+
+        padding: 60px 20px;
+
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .order-card-body {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .order-view-section {
+
+        grid-column: auto;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    [data-reveal] {
+
+        transition: none;
+
+    }
+
+}
+
+</style>
+
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const revealElements =
+            document.querySelectorAll(
+                "[data-reveal]"
+            );
+
+
+        if (
+            "IntersectionObserver"
+            in window
+        ) {
+
+
+            const observer =
+                new IntersectionObserver(
+                    function (entries) {
+
+                        entries.forEach(
+                            function (entry) {
+
+                                if (
+                                    entry.isIntersecting
+                                ) {
+
+                                    entry.target.classList.add(
+                                        "revealed"
+                                    );
+
+                                    observer.unobserve(
+                                        entry.target
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    },
+                    {
+                        threshold: 0.08
+                    }
+                );
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    observer.observe(
+                        element
+                    );
+
+                }
+            );
+
+
+        } else {
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    element.classList.add(
+                        "revealed"
+                    );
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,2010 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+{{ order.order_number }} | Dashboard
+{% endblock %}
+
+
+
+{% block content %}
+
+<section class="dashboard-order-detail-section">
+
+    <div class="container-fluid">
+
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+
+        <div
+            class="order-detail-header"
+            data-reveal
+        >
+
+            <div>
+
+                <a
+                    href="{% url 'dashboard_orders' %}"
+                    class="order-back-link"
+                >
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Back to Orders
+
+                </a>
+
+
+                <div class="order-detail-title">
+
+                    <div>
+
+                        <span class="section-label">
+                            Order Details
+                        </span>
+
+                        <h1>
+                            {{ order.order_number }}
+                        </h1>
+
+                        <p>
+                            Placed
+                            {{ order.created_at|date:"M d, Y • g:i A" }}
+                        </p>
+
+                    </div>
+
+
+                    <!-- ORDER STATUS -->
+
+                    {% if order.status == "PENDING" %}
+
+                        <span class="order-detail-status status-pending">
+
+                            <span class="status-dot"></span>
+
+                            Pending
+
+                        </span>
+
+                    {% elif order.status == "PROCESSING" %}
+
+                        <span class="order-detail-status status-processing">
+
+                            <span class="status-dot"></span>
+
+                            Processing
+
+                        </span>
+
+                    {% elif order.status == "SHIPPED" %}
+
+                        <span class="order-detail-status status-shipped">
+
+                            <span class="status-dot"></span>
+
+                            Shipped
+
+                        </span>
+
+                    {% elif order.status == "DELIVERED" %}
+
+                        <span class="order-detail-status status-delivered">
+
+                            <span class="status-dot"></span>
+
+                            Delivered
+
+                        </span>
+
+                    {% elif order.status == "CANCELLED" %}
+
+                        <span class="order-detail-status status-cancelled">
+
+                            <span class="status-dot"></span>
+
+                            Cancelled
+
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================================
+             MAIN CONTENT
+        ====================================================== -->
+
+        <div class="row g-4">
+
+
+            <!-- =================================================
+                 LEFT COLUMN
+            ================================================== -->
+
+            <div class="col-xl-8">
+
+
+                <!-- =============================================
+                     ORDER ITEMS
+                ============================================== -->
+
+                <div
+                    class="order-detail-card"
+                    data-reveal
+                >
+
+
+                    <div class="order-card-header">
+
+                        <div class="order-card-title">
+
+                            <div class="order-card-icon">
+
+                                <i class="bi bi-bag"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="section-label">
+                                    Purchase
+                                </span>
+
+                                <h2>
+                                    Order Items
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="order-items-count">
+
+                            {{ order.items.count }}
+                            item{{ order.items.count|pluralize }}
+
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- ITEMS -->
+
+                    <div class="order-items-list">
+
+
+                        {% for item in order.items.all %}
+
+
+                            <div class="order-item">
+
+
+                                <!-- IMAGE -->
+
+                                <div class="order-item-image">
+
+
+                                    {% for image in item.product.images.all %}
+
+                                        {% if image.is_cover %}
+
+                                            <img
+                                                src="{{ image.image.url }}"
+                                                alt="{{ item.product.name }}"
+                                            >
+
+                                        {% endif %}
+
+                                    {% empty %}
+
+                                        <div class="order-image-placeholder">
+
+                                            <i class="bi bi-image"></i>
+
+                                        </div>
+
+                                    {% endfor %}
+
+
+                                </div>
+
+
+
+                                <!-- PRODUCT -->
+
+                                <div class="order-item-info">
+
+                                    <h3>
+                                        {{ item.product.name }}
+                                    </h3>
+
+
+                                    <p>
+
+                                        ₦{{ item.price|floatformat:2 }}
+
+                                        <span>×</span>
+
+                                        {{ item.quantity }}
+
+                                    </p>
+
+                                </div>
+
+
+
+                                <!-- SUBTOTAL -->
+
+                                <div class="order-item-total">
+
+                                    ₦{{ item.subtotal|floatformat:2 }}
+
+                                </div>
+
+
+                            </div>
+
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+
+                    <!-- TOTAL -->
+
+                    <div class="order-total-section">
+
+
+                        <div>
+
+                            <span>
+                                Order Total
+                            </span>
+
+                            <small>
+                                Including all items
+                            </small>
+
+                        </div>
+
+
+                        <strong>
+
+                            ₦{{ order.total_amount|floatformat:2 }}
+
+                        </strong>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =============================================
+                     CUSTOMER
+                ============================================== -->
+
+                <div
+                    class="order-detail-card"
+                    data-reveal
+                >
+
+
+                    <div class="order-card-header">
+
+                        <div class="order-card-title">
+
+                            <div class="order-card-icon">
+
+                                <i class="bi bi-person"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="section-label">
+                                    Customer
+                                </span>
+
+                                <h2>
+                                    Customer Information
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="customer-information">
+
+
+                        <div class="customer-profile">
+
+
+                            <div class="customer-large-avatar">
+
+                                {% if order.user.first_name %}
+
+                                    {{ order.user.first_name|first|upper }}
+
+                                {% else %}
+
+                                    {{ order.user.username|first|upper }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div>
+
+                                <h3>
+
+                                    {% if order.user.first_name or order.user.last_name %}
+
+                                        {{ order.user.first_name }}
+                                        {{ order.user.last_name }}
+
+                                    {% else %}
+
+                                        {{ order.user.username }}
+
+                                    {% endif %}
+
+                                </h3>
+
+
+                                <span>
+                                    @{{ order.user.username }}
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="customer-details-grid">
+
+
+                            <div class="customer-detail">
+
+                                <span>
+                                    Email
+                                </span>
+
+                                <strong>
+                                    {{ order.user.email }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="customer-detail">
+
+                                <span>
+                                    Username
+                                </span>
+
+                                <strong>
+                                    {{ order.user.username }}
+                                </strong>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 RIGHT COLUMN
+            ================================================== -->
+
+            <div class="col-xl-4">
+
+
+                <!-- =============================================
+                     ORDER STATUS
+                ============================================== -->
+
+                <div
+                    class="order-detail-card status-management-card"
+                    data-reveal
+                >
+
+
+                    <div class="order-card-header">
+
+                        <div class="order-card-title">
+
+                            <div class="order-card-icon">
+
+                                <i class="bi bi-arrow-repeat"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="section-label">
+                                    Management
+                                </span>
+
+                                <h2>
+                                    Order Status
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="status-management-body">
+
+
+                        <p>
+                            Update the current status of this order.
+                        </p>
+
+
+                        <form method="POST">
+
+                            {% csrf_token %}
+
+
+                            <input
+                                type="hidden"
+                                name="action"
+                                value="update_status"
+                            >
+
+
+                            <label
+                                for="{{ form.status.id_for_label }}"
+                                class="status-form-label"
+                            >
+
+                                Current Status
+
+                            </label>
+
+
+                            {{ form.status }}
+
+
+                            <button
+                                type="submit"
+                                class="status-update-button"
+                            >
+
+                                <i class="bi bi-check-lg"></i>
+
+                                Update Status
+
+                            </button>
+
+
+                        </form>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =============================================
+                     PAYMENT
+                ============================================== -->
+
+                <div
+                    class="order-detail-card"
+                    data-reveal
+                >
+
+
+                    <div class="order-card-header">
+
+                        <div class="order-card-title">
+
+                            <div class="order-card-icon">
+
+                                <i class="bi bi-credit-card"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="section-label">
+                                    Transaction
+                                </span>
+
+                                <h2>
+                                    Payment Status
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="payment-status-body">
+
+
+                        {% if order.payment_status == "PAID" %}
+
+                            <div class="payment-status payment-paid">
+
+                                <div class="payment-status-icon">
+
+                                    <i class="bi bi-check-lg"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <strong>
+                                        Payment Received
+                                    </strong>
+
+                                    <span>
+                                        This order has been paid.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        {% elif order.payment_status == "FAILED" %}
+
+                            <div class="payment-status payment-failed">
+
+                                <div class="payment-status-icon">
+
+                                    <i class="bi bi-x-lg"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <strong>
+                                        Payment Failed
+                                    </strong>
+
+                                    <span>
+                                        The payment was unsuccessful.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="payment-status payment-pending">
+
+                                <div class="payment-status-icon">
+
+                                    <i class="bi bi-clock"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <strong>
+                                        Payment Pending
+                                    </strong>
+
+                                    <span>
+                                        Payment has not been completed.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =============================================
+                     DELIVERY
+                ============================================== -->
+
+                <div
+                    class="order-detail-card"
+                    data-reveal
+                >
+
+
+                    <div class="order-card-header">
+
+                        <div class="order-card-title">
+
+                            <div class="order-card-icon">
+
+                                <i class="bi bi-truck"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="section-label">
+                                    Fulfillment
+                                </span>
+
+                                <h2>
+                                    Delivery
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="delivery-information">
+
+
+                        <div class="delivery-item">
+
+                            <div class="delivery-icon">
+
+                                <i class="bi bi-geo-alt"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Shipping Address
+                                </span>
+
+                                <strong>
+                                    {{ order.shipping_address }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="delivery-item">
+
+                            <div class="delivery-icon">
+
+                                <i class="bi bi-telephone"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Phone Number
+                                </span>
+
+                                <strong>
+                                    {{ order.phone_number }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}
+
+
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.dashboard-order-detail-section {
+
+    padding: 42px 0 90px;
+
+    background-color: var(--background);
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.order-detail-header {
+
+    margin-bottom: 27px;
+
+}
+
+
+.order-back-link {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-bottom: 14px;
+
+    color: var(--text-muted);
+
+    font-size: 0.65rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+}
+
+
+.order-back-link:hover {
+
+    color: var(--primary);
+
+}
+
+
+.order-detail-title {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+}
+
+
+.order-detail-title h1 {
+
+    margin: 5px 0 5px;
+
+    color: var(--text);
+
+    font-size: 1.8rem;
+
+    font-weight: 800;
+
+    letter-spacing: -0.7px;
+
+}
+
+
+.order-detail-title p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.68rem;
+
+}
+
+
+.order-detail-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 8px 11px;
+
+    border-radius: 7px;
+
+    font-size: 0.6rem;
+
+    font-weight: 800;
+
+}
+
+
+.order-detail-status .status-dot {
+
+    width: 6px;
+
+    height: 6px;
+
+    border-radius: 50%;
+
+}
+
+
+/* =========================================================
+   STATUS COLORS
+========================================================= */
+
+.status-pending {
+
+    background-color: #fef3c7;
+
+    color: #92400e;
+
+}
+
+
+.status-pending .status-dot {
+
+    background-color: #f59e0b;
+
+}
+
+
+.status-processing {
+
+    background-color: #dbeafe;
+
+    color: #1d4ed8;
+
+}
+
+
+.status-processing .status-dot {
+
+    background-color: #3b82f6;
+
+}
+
+
+.status-shipped {
+
+    background-color: #dbeafe;
+
+    color: #1e40af;
+
+}
+
+
+.status-shipped .status-dot {
+
+    background-color: #2563eb;
+
+}
+
+
+.status-delivered {
+
+    background-color: #dcfce7;
+
+    color: #166534;
+
+}
+
+
+.status-delivered .status-dot {
+
+    background-color: #22c55e;
+
+}
+
+
+.status-cancelled {
+
+    background-color: #fee2e2;
+
+    color: #991b1b;
+
+}
+
+
+.status-cancelled .status-dot {
+
+    background-color: #ef4444;
+
+}
+
+
+[data-theme="dark"] .status-pending {
+
+    background-color: #422006;
+
+    color: #fbbf24;
+
+}
+
+
+[data-theme="dark"] .status-processing,
+[data-theme="dark"] .status-shipped {
+
+    background-color: #172554;
+
+    color: #93c5fd;
+
+}
+
+
+[data-theme="dark"] .status-delivered {
+
+    background-color: #052e16;
+
+    color: #86efac;
+
+}
+
+
+[data-theme="dark"] .status-cancelled {
+
+    background-color: #450a0a;
+
+    color: #fca5a5;
+
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.order-detail-card {
+
+    overflow: hidden;
+
+    margin-bottom: 18px;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    box-shadow: var(--shadow-sm);
+
+}
+
+
+.order-card-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 19px 22px;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.order-card-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.order-card-icon {
+
+    width: 39px;
+
+    height: 39px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 9px;
+
+}
+
+
+.order-card-title h2 {
+
+    margin: 4px 0 0;
+
+    color: var(--text);
+
+    font-size: 0.9rem;
+
+    font-weight: 800;
+
+}
+
+
+/* =========================================================
+   ITEMS
+========================================================= */
+
+.order-items-list {
+
+    padding: 7px 22px;
+
+}
+
+
+.order-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.order-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.order-item-image {
+
+    width: 62px;
+
+    height: 62px;
+
+    flex-shrink: 0;
+
+}
+
+
+.order-item-image img,
+.order-image-placeholder {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    border-radius: 9px;
+
+}
+
+
+.order-image-placeholder {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color: var(--surface-soft);
+
+    color: var(--text-muted);
+
+    font-size: 1rem;
+
+}
+
+
+.order-item-info {
+
+    min-width: 0;
+
+    flex: 1;
+
+}
+
+
+.order-item-info h3 {
+
+    margin: 0 0 5px;
+
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 0.72rem;
+
+    font-weight: 750;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+.order-item-info p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.62rem;
+
+}
+
+
+.order-item-info p span {
+
+    margin: 0 3px;
+
+}
+
+
+.order-item-total {
+
+    color: var(--text);
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+.order-total-section {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 19px 22px;
+
+    background-color: var(--surface-soft);
+
+    border-top: 1px solid var(--border);
+
+}
+
+
+.order-total-section span {
+
+    display: block;
+
+    color: var(--text);
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+}
+
+
+.order-total-section small {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--text-muted);
+
+    font-size: 0.55rem;
+
+}
+
+
+.order-total-section strong {
+
+    color: var(--primary);
+
+    font-size: 1.05rem;
+
+    font-weight: 800;
+
+}
+
+
+/* =========================================================
+   CUSTOMER
+========================================================= */
+
+.customer-information {
+
+    padding: 21px 22px;
+
+}
+
+
+.customer-profile {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    margin-bottom: 21px;
+
+}
+
+
+.customer-large-avatar {
+
+    width: 46px;
+
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 11px;
+
+    font-size: 0.9rem;
+
+    font-weight: 800;
+
+}
+
+
+.customer-profile h3 {
+
+    margin: 0 0 3px;
+
+    color: var(--text);
+
+    font-size: 0.78rem;
+
+    font-weight: 800;
+
+}
+
+
+.customer-profile span {
+
+    color: var(--text-muted);
+
+    font-size: 0.6rem;
+
+}
+
+
+.customer-details-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+
+}
+
+
+.customer-detail {
+
+    padding: 12px;
+
+    background-color: var(--surface-soft);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+}
+
+
+.customer-detail span {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--text-muted);
+
+    font-size: 0.55rem;
+
+}
+
+
+.customer-detail strong {
+
+    display: block;
+
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 0.62rem;
+
+    text-overflow: ellipsis;
+
+}
+
+
+/* =========================================================
+   STATUS MANAGEMENT
+========================================================= */
+
+.status-management-body {
+
+    padding: 21px 22px;
+
+}
+
+
+.status-management-body p {
+
+    margin: 0 0 17px;
+
+    color: var(--text-muted);
+
+    font-size: 0.62rem;
+
+    line-height: 1.5;
+
+}
+
+
+.status-form-label {
+
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--text);
+
+    font-size: 0.62rem;
+
+    font-weight: 700;
+
+}
+
+
+.status-management-body select {
+
+    width: 100%;
+
+    height: 42px;
+
+    padding: 0 10px;
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 0.65rem;
+
+}
+
+
+.status-management-body select:focus {
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.10);
+
+}
+
+
+.status-update-button {
+
+    width: 100%;
+
+    height: 42px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    margin-top: 11px;
+
+    background-color: var(--primary);
+
+    color: white;
+
+    border: 1px solid var(--primary);
+
+    border-radius: 8px;
+
+    font-size: 0.65rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+}
+
+
+.status-update-button:hover {
+
+    background-color: var(--primary-dark);
+
+}
+
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+.payment-status-body {
+
+    padding: 20px 22px;
+
+}
+
+
+.payment-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 13px;
+
+    border-radius: 9px;
+
+}
+
+
+.payment-status-icon {
+
+    width: 34px;
+
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 8px;
+
+}
+
+
+.payment-status strong {
+
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 0.65rem;
+
+    font-weight: 800;
+
+}
+
+
+.payment-status span {
+
+    display: block;
+
+    font-size: 0.55rem;
+
+}
+
+
+.payment-paid {
+
+    background-color: #dcfce7;
+
+    color: #166534;
+
+}
+
+
+.payment-paid .payment-status-icon {
+
+    background-color: #bbf7d0;
+
+}
+
+
+.payment-failed {
+
+    background-color: #fee2e2;
+
+    color: #991b1b;
+
+}
+
+
+.payment-failed .payment-status-icon {
+
+    background-color: #fecaca;
+
+}
+
+
+.payment-pending {
+
+    background-color: #fef3c7;
+
+    color: #92400e;
+
+}
+
+
+.payment-pending .payment-status-icon {
+
+    background-color: #fde68a;
+
+}
+
+
+[data-theme="dark"] .payment-paid {
+
+    background-color: #052e16;
+
+    color: #86efac;
+
+}
+
+
+[data-theme="dark"] .payment-paid .payment-status-icon {
+
+    background-color: #14532d;
+
+}
+
+
+[data-theme="dark"] .payment-failed {
+
+    background-color: #450a0a;
+
+    color: #fca5a5;
+
+}
+
+
+[data-theme="dark"] .payment-failed .payment-status-icon {
+
+    background-color: #7f1d1d;
+
+}
+
+
+[data-theme="dark"] .payment-pending {
+
+    background-color: #422006;
+
+    color: #fbbf24;
+
+}
+
+
+[data-theme="dark"] .payment-pending .payment-status-icon {
+
+    background-color: #78350f;
+
+}
+
+
+/* =========================================================
+   DELIVERY
+========================================================= */
+
+.delivery-information {
+
+    padding: 8px 22px 20px;
+
+}
+
+
+.delivery-item {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding: 13px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.delivery-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.delivery-icon {
+
+    width: 32px;
+
+    height: 32px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 7px;
+
+    font-size: 0.7rem;
+
+}
+
+
+.delivery-item span {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--text-muted);
+
+    font-size: 0.55rem;
+
+}
+
+
+.delivery-item strong {
+
+    display: block;
+
+    color: var(--text);
+
+    font-size: 0.63rem;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================================
+   REVEAL
+========================================================= */
+
+[data-reveal] {
+
+    opacity: 0;
+
+    transform:
+        translateY(18px);
+
+    transition:
+        opacity 0.6s ease,
+        transform 0.6s ease;
+
+}
+
+
+[data-reveal].revealed {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .dashboard-order-detail-section {
+
+        padding: 32px 0 70px;
+
+    }
+
+
+    .order-detail-title {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+
+    .order-detail-title h1 {
+
+        font-size: 1.5rem;
+
+    }
+
+
+    .order-detail-status {
+
+        align-self: flex-start;
+
+    }
+
+
+    .customer-details-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+
+@media (max-width: 575px) {
+
+    .order-card-header {
+
+        padding: 17px;
+
+    }
+
+
+    .order-items-list {
+
+        padding: 5px 17px;
+
+    }
+
+
+    .order-total-section {
+
+        padding: 17px;
+
+    }
+
+
+    .customer-information,
+    .status-management-body,
+    .payment-status-body {
+
+        padding: 17px;
+
+    }
+
+
+    .delivery-information {
+
+        padding: 5px 17px 17px;
+
+    }
+
+
+    .order-item-image {
+
+        width: 54px;
+
+        height: 54px;
+
+    }
+
+
+    .order-item-total {
+
+        font-size: 0.65rem;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    [data-reveal] {
+
+        transition: none;
+
+    }
+
+}
+
+</style>
+
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const revealElements =
+            document.querySelectorAll(
+                "[data-reveal]"
+            );
+
+
+        if (
+            "IntersectionObserver"
+            in window
+        ) {
+
+
+            const observer =
+                new IntersectionObserver(
+                    function (entries) {
+
+                        entries.forEach(
+                            function (entry) {
+
+                                if (
+                                    entry.isIntersecting
+                                ) {
+
+                                    entry.target.classList.add(
+                                        "revealed"
+                                    );
+
+                                    observer.unobserve(
+                                        entry.target
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    },
+                    {
+                        threshold: 0.08
+                    }
+
+                );
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    observer.observe(
+                        element
+                    );
+
+                }
+            );
+
+
+        } else {
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    element.classList.add(
+                        "revealed"
+                    );
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+{% endblock %}

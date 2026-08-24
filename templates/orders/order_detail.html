@@ -1,0 +1,1877 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+
+{% block title %}
+Order {{ order.order_number }} | Alphix Store
+{% endblock %}
+
+
+
+{% block content %}
+
+<section class="order-detail-section">
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             ORDER CONFIRMATION
+        ====================================================== -->
+
+        <div
+            class="order-confirmation"
+            data-reveal
+        >
+
+            <div class="confirmation-icon">
+
+                <i class="bi bi-check-lg"></i>
+
+            </div>
+
+
+            <span class="section-label">
+                Order Successfully Placed
+            </span>
+
+
+            <h1>
+                Order Confirmed!
+            </h1>
+
+
+            <p>
+                Thank you for your order. We've received it and
+                will keep you updated as it moves through the
+                delivery process.
+            </p>
+
+
+            <div class="confirmation-number">
+
+                <span>
+                    Order
+                </span>
+
+                <strong>
+                    {{ order.order_number }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="row g-4 align-items-start">
+
+
+            <!-- =================================================
+                 ORDER ITEMS
+            ================================================== -->
+
+            <div
+                class="col-lg-8"
+                data-reveal
+            >
+
+                <div class="order-detail-card">
+
+
+                    <!-- HEADER -->
+
+                    <div class="order-detail-card-header">
+
+                        <div>
+
+                            <span class="section-label">
+                                Your Purchase
+                            </span>
+
+                            <h2>
+                                Order Items
+                            </h2>
+
+                            <p>
+
+                                Placed
+                                {{ order.created_at|date:"M d, Y" }}
+                                at
+                                {{ order.created_at|date:"g:i A" }}
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- ORDER STATUS -->
+
+                        {% if order.status == "PENDING" %}
+
+                            <span class="detail-status status-pending">
+
+                                <span class="status-dot"></span>
+
+                                {{ order.get_status_display }}
+
+                            </span>
+
+                        {% elif order.status == "PROCESSING" %}
+
+                            <span class="detail-status status-processing">
+
+                                <span class="status-dot"></span>
+
+                                {{ order.get_status_display }}
+
+                            </span>
+
+                        {% elif order.status == "SHIPPED" %}
+
+                            <span class="detail-status status-shipped">
+
+                                <span class="status-dot"></span>
+
+                                {{ order.get_status_display }}
+
+                            </span>
+
+                        {% elif order.status == "DELIVERED" %}
+
+                            <span class="detail-status status-delivered">
+
+                                <span class="status-dot"></span>
+
+                                {{ order.get_status_display }}
+
+                            </span>
+
+                        {% elif order.status == "CANCELLED" %}
+
+                            <span class="detail-status status-cancelled">
+
+                                <span class="status-dot"></span>
+
+                                {{ order.get_status_display }}
+
+                            </span>
+
+                        {% endif %}
+
+
+                    </div>
+
+
+
+                    <!-- ITEMS -->
+
+                    <div class="order-items">
+
+
+                        {% for item in order.items.all %}
+
+
+                            <div class="order-item">
+
+
+                                <!-- IMAGE -->
+
+                                <div class="order-item-image">
+
+
+                                    {% with cover_image=item.product.images.all|first %}
+
+
+                                        {% if cover_image %}
+
+                                            <img
+                                                src="{{ cover_image.image.url }}"
+                                                alt="{{ item.product.name }}"
+                                            >
+
+                                        {% else %}
+
+                                            <div class="order-no-image">
+
+                                                <i class="bi bi-image"></i>
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                    {% endwith %}
+
+
+                                </div>
+
+
+
+                                <!-- PRODUCT -->
+
+                                <div class="order-item-info">
+
+                                    <h3>
+                                        {{ item.product.name }}
+                                    </h3>
+
+
+                                    <span>
+
+                                        ₦{{ item.price|intcomma }}
+
+                                        ×
+
+                                        {{ item.quantity }}
+
+                                    </span>
+
+                                </div>
+
+
+
+                                <!-- SUBTOTAL -->
+
+                                <strong class="order-item-subtotal">
+
+                                    ₦{{ item.subtotal|intcomma }}
+
+                                </strong>
+
+
+                            </div>
+
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+
+                    <!-- TOTAL -->
+
+                    <div class="order-detail-total">
+
+                        <span>
+                            Total
+                        </span>
+
+
+                        <strong>
+                            ₦{{ order.total_amount|intcomma }}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ORDER INFORMATION
+            ================================================== -->
+
+            <div
+                class="col-lg-4"
+                data-reveal
+            >
+
+
+                <!-- PAYMENT -->
+
+                <div class="order-info-card">
+
+
+                    <div class="order-info-card-header">
+
+                        <div class="order-info-icon">
+
+                            <i class="bi bi-credit-card"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Payment
+                            </h2>
+
+                            <span>
+                                Payment status
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    {% if order.payment_status == "PAID" %}
+
+                        <div class="payment-status payment-paid">
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                            <div>
+
+                                <strong>
+                                    {{ order.get_payment_status_display }}
+                                </strong>
+
+                                <small>
+                                    Payment completed successfully.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    {% elif order.payment_status == "FAILED" %}
+
+                        <div class="payment-status payment-failed">
+
+                            <i class="bi bi-x-circle-fill"></i>
+
+                            <div>
+
+                                <strong>
+                                    {{ order.get_payment_status_display }}
+                                </strong>
+
+                                <small>
+                                    Payment could not be completed.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="payment-status payment-pending">
+
+                            <i class="bi bi-clock-fill"></i>
+
+                            <div>
+
+                                <strong>
+                                    {{ order.get_payment_status_display }}
+                                </strong>
+
+                                <small>
+                                    Payment is currently pending.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+
+                <!-- DELIVERY -->
+
+                <div class="order-info-card">
+
+
+                    <div class="order-info-card-header">
+
+                        <div class="order-info-icon">
+
+                            <i class="bi bi-truck"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Delivery
+                            </h2>
+
+                            <span>
+                                Where we'll deliver your order
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="delivery-detail">
+
+                        <span>
+                            Address
+                        </span>
+
+
+                        <p>
+                            {{ order.shipping_address }}
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="delivery-detail">
+
+                        <span>
+                            Phone
+                        </span>
+
+
+                        <p>
+                            {{ order.phone_number }}
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- ORDER STATUS -->
+
+                <div class="order-info-card">
+
+
+                    <div class="order-info-card-header">
+
+                        <div class="order-info-icon">
+
+                            <i class="bi bi-box-seam"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Order Status
+                            </h2>
+
+                            <span>
+                                Current progress
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="order-progress">
+
+
+                        <div class="progress-item active">
+
+                            <span class="progress-icon">
+
+                                <i class="bi bi-receipt"></i>
+
+                            </span>
+
+
+                            <div>
+
+                                <strong>
+                                    Order Placed
+                                </strong>
+
+                                {% if order.status == "PENDING" %}
+                                    <small>
+                                        Your order has been received.
+                                    </small>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div
+                            class="
+                                progress-item
+                                {% if order.status == 'PROCESSING' or order.status == 'SHIPPED' or order.status == 'DELIVERED' %}
+                                    active
+                                {% endif %}
+                            "
+                        >
+
+                            <span class="progress-icon">
+
+                                <i class="bi bi-box-seam"></i>
+
+                            </span>
+
+
+                            <div>
+
+                                <strong>
+                                    Processing
+                                </strong>
+
+                                {% if order.status == "PROCESSING" %}
+                                    <small>
+                                        We're preparing your order.
+                                    </small>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div
+                            class="
+                                progress-item
+                                {% if order.status == 'SHIPPED' or order.status == 'DELIVERED' %}
+                                    active
+                                {% endif %}
+                            "
+                        >
+
+                            <span class="progress-icon">
+
+                                <i class="bi bi-truck"></i>
+
+                            </span>
+
+
+                            <div>
+
+                                <strong>
+                                    Shipped
+                                </strong>
+
+                                {% if order.status == "SHIPPED" %}
+                                    <small>
+                                        Your order is on its way.
+                                    </small>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div
+                            class="
+                                progress-item
+                                {% if order.status == 'DELIVERED' %}
+                                    active
+                                {% endif %}
+                            "
+                        >
+
+                            <span class="progress-icon">
+
+                                <i class="bi bi-check-circle"></i>
+
+                            </span>
+
+
+                            <div>
+
+                                <strong>
+                                    Delivered
+                                </strong>
+
+                                {% if order.status == "DELIVERED" %}
+                                    <small>
+                                        Your order has arrived.
+                                    </small>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- ACTIONS -->
+
+                <div class="order-actions">
+
+
+                    <a
+                        href="{% url 'all_products' %}"
+                        class="order-primary-action"
+                    >
+
+                        <i class="bi bi-bag"></i>
+
+                        Continue Shopping
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </a>
+
+
+                    <a
+                        href="{% url 'my_orders' %}"
+                        class="order-secondary-action"
+                    >
+
+                        <i class="bi bi-receipt"></i>
+
+                        Back to My Orders
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+{% endblock %}
+
+
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   ORDER DETAIL SECTION
+========================================================= */
+
+.order-detail-section {
+
+    padding: 50px 0 100px;
+
+    background-color: var(--background);
+
+}
+
+
+/* =========================================================
+   CONFIRMATION
+========================================================= */
+
+.order-confirmation {
+
+    max-width: 700px;
+
+    margin: 0 auto 55px;
+
+    text-align: center;
+
+}
+
+
+.confirmation-icon {
+
+    width: 75px;
+
+    height: 75px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 0 auto 20px;
+
+    background-color: #dcfce7;
+
+    color: #15803d;
+
+    border-radius: 50%;
+
+    font-size: 2rem;
+
+}
+
+
+[data-theme="dark"]
+.confirmation-icon {
+
+    background-color: #14532d;
+
+    color: #86efac;
+
+}
+
+
+.order-confirmation h1 {
+
+    margin: 8px 0 10px;
+
+    color: var(--text);
+
+    font-size: clamp(
+        2rem,
+        4vw,
+        2.8rem
+    );
+
+    font-weight: 800;
+
+    letter-spacing: -1.3px;
+
+}
+
+
+.order-confirmation > p {
+
+    max-width: 580px;
+
+    margin: 0 auto 20px;
+
+    color: var(--text-muted);
+
+    font-size: 0.9rem;
+
+    line-height: 1.7;
+
+}
+
+
+.confirmation-number {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 8px 13px;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    font-size: 0.75rem;
+
+}
+
+
+.confirmation-number span {
+
+    color: var(--text-muted);
+
+}
+
+
+.confirmation-number strong {
+
+    color: var(--primary);
+
+}
+
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+.order-detail-card {
+
+    overflow: hidden;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
+
+    box-shadow: var(--shadow-sm);
+
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.order-detail-card-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 25px;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.order-detail-card-header h2 {
+
+    margin: 5px 0 5px;
+
+    color: var(--text);
+
+    font-size: 1.25rem;
+
+    font-weight: 800;
+
+}
+
+
+.order-detail-card-header p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.72rem;
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.detail-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 7px 10px;
+
+    border-radius: 50px;
+
+    font-size: 0.68rem;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+}
+
+
+.status-dot {
+
+    width: 6px;
+
+    height: 6px;
+
+    border-radius: 50%;
+
+    background-color: currentColor;
+
+}
+
+
+.status-pending {
+
+    background-color: #fef3c7;
+
+    color: #a16207;
+
+}
+
+
+.status-processing {
+
+    background-color: #dbeafe;
+
+    color: #1d4ed8;
+
+}
+
+
+.status-shipped {
+
+    background-color: #e0e7ff;
+
+    color: #4338ca;
+
+}
+
+
+.status-delivered {
+
+    background-color: #dcfce7;
+
+    color: #15803d;
+
+}
+
+
+.status-cancelled {
+
+    background-color: #fee2e2;
+
+    color: #b91c1c;
+
+}
+
+
+[data-theme="dark"]
+.status-pending {
+
+    background-color: #713f12;
+
+    color: #fde68a;
+
+}
+
+
+[data-theme="dark"]
+.status-processing {
+
+    background-color: #1e3a8a;
+
+    color: #bfdbfe;
+
+}
+
+
+[data-theme="dark"]
+.status-shipped {
+
+    background-color: #312e81;
+
+    color: #c7d2fe;
+
+}
+
+
+[data-theme="dark"]
+.status-delivered {
+
+    background-color: #14532d;
+
+    color: #86efac;
+
+}
+
+
+[data-theme="dark"]
+.status-cancelled {
+
+    background-color: #450a0a;
+
+    color: #fca5a5;
+
+}
+
+
+/* =========================================================
+   ORDER ITEMS
+========================================================= */
+
+.order-items {
+
+    padding: 5px 25px;
+
+}
+
+
+.order-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 18px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.order-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.order-item-image {
+
+    width: 80px;
+
+    height: 80px;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    background-color: var(--surface-soft);
+
+    border-radius: 10px;
+
+}
+
+
+.order-item-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+}
+
+
+.order-no-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: var(--text-muted);
+
+    font-size: 1.4rem;
+
+}
+
+
+.order-item-info {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+
+.order-item-info h3 {
+
+    margin: 0 0 6px;
+
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 0.9rem;
+
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+.order-item-info span {
+
+    color: var(--text-muted);
+
+    font-size: 0.74rem;
+
+}
+
+
+.order-item-subtotal {
+
+    color: var(--text);
+
+    font-size: 0.85rem;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================================
+   TOTAL
+========================================================= */
+
+.order-detail-total {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin: 5px 25px 0;
+
+    padding: 22px 0;
+
+    border-top: 1px solid var(--border);
+
+}
+
+
+.order-detail-total span {
+
+    color: var(--text);
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+}
+
+
+.order-detail-total strong {
+
+    color: var(--primary);
+
+    font-size: 1.4rem;
+
+    font-weight: 800;
+
+}
+
+
+/* =========================================================
+   INFORMATION CARDS
+========================================================= */
+
+.order-info-card {
+
+    margin-bottom: 15px;
+
+    padding: 20px;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    box-shadow: var(--shadow-sm);
+
+}
+
+
+.order-info-card-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    margin-bottom: 18px;
+
+}
+
+
+.order-info-icon {
+
+    width: 40px;
+
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 9px;
+
+}
+
+
+.order-info-card-header h2 {
+
+    margin: 0 0 2px;
+
+    color: var(--text);
+
+    font-size: 0.85rem;
+
+    font-weight: 800;
+
+}
+
+
+.order-info-card-header span {
+
+    color: var(--text-muted);
+
+    font-size: 0.66rem;
+
+}
+
+
+/* =========================================================
+   PAYMENT STATUS
+========================================================= */
+
+.payment-status {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding: 12px;
+
+    border-radius: 9px;
+
+}
+
+
+.payment-status > i {
+
+    margin-top: 2px;
+
+}
+
+
+.payment-status strong {
+
+    display: block;
+
+    margin-bottom: 2px;
+
+    font-size: 0.76rem;
+
+}
+
+
+.payment-status small {
+
+    display: block;
+
+    font-size: 0.65rem;
+
+}
+
+
+.payment-paid {
+
+    background-color: #dcfce7;
+
+    color: #15803d;
+
+}
+
+
+.payment-failed {
+
+    background-color: #fee2e2;
+
+    color: #b91c1c;
+
+}
+
+
+.payment-pending {
+
+    background-color: #fef3c7;
+
+    color: #a16207;
+
+}
+
+
+[data-theme="dark"]
+.payment-paid {
+
+    background-color: #14532d;
+
+    color: #86efac;
+
+}
+
+
+[data-theme="dark"]
+.payment-failed {
+
+    background-color: #450a0a;
+
+    color: #fca5a5;
+
+}
+
+
+[data-theme="dark"]
+.payment-pending {
+
+    background-color: #713f12;
+
+    color: #fde68a;
+
+}
+
+
+/* =========================================================
+   DELIVERY
+========================================================= */
+
+.delivery-detail {
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.delivery-detail:last-child {
+
+    border-bottom: none;
+
+    padding-bottom: 0;
+
+}
+
+
+.delivery-detail span {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 0.65rem;
+
+    font-weight: 600;
+
+}
+
+
+.delivery-detail p {
+
+    margin: 0;
+
+    color: var(--text);
+
+    font-size: 0.78rem;
+
+    line-height: 1.6;
+
+}
+
+
+/* =========================================================
+   ORDER PROGRESS
+========================================================= */
+
+.order-progress {
+
+    position: relative;
+
+}
+
+
+.progress-item {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding-bottom: 20px;
+
+    color: var(--text-muted);
+
+}
+
+
+.progress-item:last-child {
+
+    padding-bottom: 0;
+
+}
+
+
+.progress-item:not(:last-child)::after {
+
+    content: "";
+
+    position: absolute;
+
+    top: 32px;
+
+    left: 15px;
+
+    width: 1px;
+
+    height: calc(100% - 16px);
+
+    background-color: var(--border);
+
+}
+
+
+.progress-item.active {
+
+    color: var(--primary);
+
+}
+
+
+.progress-icon {
+
+    position: relative;
+
+    z-index: 1;
+
+    width: 31px;
+
+    height: 31px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color: var(--surface-soft);
+
+    border: 1px solid var(--border);
+
+    border-radius: 50%;
+
+    font-size: 0.7rem;
+
+}
+
+
+.progress-item.active
+.progress-icon {
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-color:
+        rgba(37, 99, 235, 0.20);
+
+}
+
+
+.progress-item strong {
+
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--text);
+
+    font-size: 0.72rem;
+
+}
+
+
+.progress-item small {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--text-muted);
+
+    font-size: 0.62rem;
+
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.order-actions {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 9px;
+
+}
+
+
+.order-primary-action,
+.order-secondary-action {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 12px 15px;
+
+    border-radius: 9px;
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+
+}
+
+
+.order-primary-action {
+
+    background-color: var(--primary);
+
+    color: white;
+
+}
+
+
+.order-primary-action:hover {
+
+    background-color: var(--primary-dark);
+
+    color: white;
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+.order-primary-action i:last-child {
+
+    margin-left: auto;
+
+}
+
+
+.order-secondary-action {
+
+    background-color: var(--surface);
+
+    color: var(--text-secondary);
+
+    border: 1px solid var(--border);
+
+}
+
+
+.order-secondary-action:hover {
+
+    background-color: var(--surface-soft);
+
+    color: var(--text);
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* =========================================================
+   SCROLL REVEAL
+========================================================= */
+
+[data-reveal] {
+
+    opacity: 0;
+
+    transform:
+        translateY(20px);
+
+    transition:
+        opacity 0.6s ease,
+        transform 0.6s ease;
+
+}
+
+
+[data-reveal].revealed {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .order-info-card {
+
+        margin-bottom: 15px;
+
+    }
+
+}
+
+
+@media (max-width: 767px) {
+
+    .order-detail-section {
+
+        padding: 40px 0 70px;
+
+    }
+
+
+    .order-confirmation {
+
+        margin-bottom: 40px;
+
+    }
+
+
+    .order-detail-card-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        padding: 20px;
+
+    }
+
+
+    .order-items {
+
+        padding: 5px 20px;
+
+    }
+
+
+    .order-detail-total {
+
+        margin-left: 20px;
+
+        margin-right: 20px;
+
+    }
+
+
+    .order-item {
+
+        gap: 12px;
+
+    }
+
+
+    .order-item-image {
+
+        width: 65px;
+
+        height: 65px;
+
+    }
+
+
+    .order-item-info h3 {
+
+        font-size: 0.8rem;
+
+    }
+
+
+    .order-item-subtotal {
+
+        font-size: 0.76rem;
+
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .order-item {
+
+        flex-wrap: wrap;
+
+    }
+
+
+    .order-item-info {
+
+        max-width: calc(
+            100% - 80px
+        );
+
+    }
+
+
+    .order-item-subtotal {
+
+        width: 100%;
+
+        padding-left: 77px;
+
+    }
+
+
+    .confirmation-number {
+
+        flex-direction: column;
+
+        gap: 2px;
+
+    }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    [data-reveal] {
+
+        transition: none;
+
+    }
+
+}
+
+</style>
+
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const revealElements =
+            document.querySelectorAll(
+                "[data-reveal]"
+            );
+
+
+        if (
+            "IntersectionObserver"
+            in window
+        ) {
+
+
+            const observer =
+                new IntersectionObserver(
+                    function (entries) {
+
+                        entries.forEach(
+                            function (entry) {
+
+                                if (
+                                    entry.isIntersecting
+                                ) {
+
+                                    entry.target.classList.add(
+                                        "revealed"
+                                    );
+
+                                    observer.unobserve(
+                                        entry.target
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    },
+                    {
+                        threshold: 0.08
+                    }
+                );
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    observer.observe(
+                        element
+                    );
+
+                }
+            );
+
+
+        } else {
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    element.classList.add(
+                        "revealed"
+                    );
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+{% endblock %}

@@ -1,336 +1,1689 @@
 {% extends "base.html" %}
 
+{% load humanize %}
 
 {% block title %}
-{{ product.name }}
+    {{ product.name }} | Alphix Store
 {% endblock %}
-
 
 
 
 {% block content %}
 
 
-<div class="container mt-5">
+<!-- =========================================================
+     PRODUCT DETAIL
+========================================================= -->
 
+<section class="product-detail-section">
 
-<div class="row">
+    <div class="container">
 
 
-<!-- IMAGE SECTION -->
+        <!-- BREADCRUMB -->
 
-<div class="col-md-6">
+        <div
+            class="product-breadcrumb"
+            data-reveal
+        >
 
+            <a href="{% url 'home' %}">
+                Home
+            </a>
 
-<div id="productCarousel" class="carousel slide shadow">
+            <i class="bi bi-chevron-right"></i>
 
+            <a href="{% url 'all_products' %}">
+                Products
+            </a>
 
-<div class="carousel-inner">
+            <i class="bi bi-chevron-right"></i>
 
+            <span>
+                {{ product.name }}
+            </span>
 
-{% for image in product.images.all %}
+        </div>
 
 
-<div class="carousel-item 
-{% if image.is_cover %}active{% endif %}">
 
+        <div class="row g-5 align-items-start">
 
-<img 
-src="{{ image.image.url }}"
-class="d-block w-100 rounded"
-style="
-height:500px;
-object-fit:cover;
-"
->
 
+            <!-- =================================================
+                 IMAGE SECTION
+            ================================================= -->
 
-</div>
+            <div
+                class="col-lg-7"
+                data-reveal
+            >
 
+                <div class="product-gallery">
 
-{% endfor %}
 
+                    <!-- MAIN IMAGE -->
 
-</div>
+                    <div
+                        id="productCarousel"
+                        class="carousel slide product-main-image"
+                        data-bs-ride="false"
+                    >
 
 
+                        <div class="carousel-inner">
 
 
-<button 
-class="carousel-control-prev"
-type="button"
-data-bs-target="#productCarousel"
-data-bs-slide="prev">
+                            {% for image in product.images.all %}
 
 
-<span class="carousel-control-prev-icon"></span>
+                                <div
+                                    class="carousel-item {% if image.is_cover %}active{% endif %}"
+                                    data-image-index="{{ forloop.counter0 }}"
+                                >
 
+                                    <img
+                                        src="{{ image.image.url }}"
+                                        alt="{{ product.name }}"
+                                        class="product-detail-image"
+                                    >
 
-</button>
+                                </div>
 
 
+                            {% empty %}
 
-<button 
-class="carousel-control-next"
-type="button"
-data-bs-target="#productCarousel"
-data-bs-slide="next">
 
+                                <div class="carousel-item active">
 
-<span class="carousel-control-next-icon"></span>
+                                    <div class="product-detail-no-image">
 
+                                        <i class="bi bi-image"></i>
 
-</button>
+                                        <span>
+                                            No Image Available
+                                        </span>
 
+                                    </div>
 
+                                </div>
 
-</div>
 
+                            {% endfor %}
 
 
+                        </div>
 
 
-<!-- THUMBNAILS -->
 
+                        <!-- PREVIOUS -->
 
-<div class="row mt-3">
+                        {% if product.images.all %}
 
+                            <button
+                                class="carousel-control-prev product-carousel-control"
+                                type="button"
+                                data-bs-target="#productCarousel"
+                                data-bs-slide="prev"
+                            >
 
-{% for image in product.images.all %}
+                                <span
+                                    class="carousel-control-prev-icon"
+                                ></span>
 
+                                <span class="visually-hidden">
+                                    Previous
+                                </span>
 
-<div class="col-3">
+                            </button>
 
 
-<img 
-src="{{ image.image.url }}"
-class="img-thumbnail"
-style="
-height:100px;
-width:100%;
-object-fit:cover;
-cursor:pointer;
-"
->
 
+                            <!-- NEXT -->
 
-</div>
+                            <button
+                                class="carousel-control-next product-carousel-control"
+                                type="button"
+                                data-bs-target="#productCarousel"
+                                data-bs-slide="next"
+                            >
 
+                                <span
+                                    class="carousel-control-next-icon"
+                                ></span>
 
-{% endfor %}
+                                <span class="visually-hidden">
+                                    Next
+                                </span>
 
+                            </button>
 
+                        {% endif %}
 
-</div>
 
+                    </div>
 
 
-</div>
 
+                    <!-- =================================================
+                         THUMBNAILS
+                    ================================================= -->
 
+                    {% if product.images.all %}
 
+                        <div class="product-thumbnails">
 
 
+                            {% for image in product.images.all %}
 
+                                <button
+                                    type="button"
+                                    class="product-thumbnail {% if image.is_cover %}active{% endif %}"
+                                    data-bs-target="#productCarousel"
+                                    data-bs-slide-to="{{ forloop.counter0 }}"
+                                    aria-label="View product image {{ forloop.counter }}"
+                                >
 
-<!-- PRODUCT INFORMATION -->
+                                    <img
+                                        src="{{ image.image.url }}"
+                                        alt="{{ product.name }} image {{ forloop.counter }}"
+                                    >
 
-<div class="col-md-6">
+                                </button>
 
+                            {% endfor %}
 
-<h1>
 
-{{ product.name }}
+                        </div>
 
-</h1>
+                    {% endif %}
 
 
+                </div>
 
-<p class="text-muted">
+            </div>
 
-Brand:
-{{ product.brand.name }}
 
-</p>
 
+            <!-- =================================================
+                 PRODUCT INFORMATION
+            ================================================= -->
 
+            <div
+                class="col-lg-5"
+                data-reveal
+            >
 
-<p class="text-muted">
+                <div class="product-detail-info">
 
-Category:
-{{ product.brand.category.name }}
 
-</p>
+                    <!-- BRAND -->
 
+                    {% if product.brand %}
 
+                        <span class="product-detail-brand">
 
-<h3 class="text-primary">
+                            {{ product.brand.name }}
 
-${{ product.price }}
+                        </span>
 
-</h3>
+                    {% endif %}
 
 
 
-<p>
+                    <!-- PRODUCT NAME -->
 
-{{ product.description }}
+                    <h1 class="product-detail-title">
 
-</p>
+                        {{ product.name }}
 
+                    </h1>
 
 
 
-{% if product.is_in_stock %}
+                    <!-- CATEGORY -->
 
+                    {% if product.brand.category %}
 
-<span class="badge bg-success">
+                        <div class="product-category">
 
-Available
+                            <i class="bi bi-tag"></i>
 
-</span>
+                            {{ product.brand.category.name }}
 
+                        </div>
 
-{% else %}
+                    {% endif %}
 
 
-<span class="badge bg-danger">
 
-Out Of Stock
+                    <!-- RATING PLACEHOLDER -->
 
-</span>
+                    <div class="product-detail-meta">
 
+                        <span>
 
-{% endif %}
+                            <i class="bi bi-star-fill"></i>
 
+                            Quality Product
 
+                        </span>
 
+                        <span class="meta-divider"></span>
 
+                        <span>
 
-<br><br>
+                            Alphix Store
 
+                        </span>
 
+                    </div>
 
-<a
-    href="{% url 'add_to_cart' product.id %}"
-    class="btn btn-primary"
->
-    <i class="bi bi-cart-plus me-1"></i>
-    Add to Cart
-</a>
 
 
+                    <!-- PRICE -->
 
-</div>
+                    <div class="product-detail-price">
 
+                        ₦{{ product.price|intcomma }}
 
+                    </div>
 
-</div>
 
 
+                    <!-- DESCRIPTION -->
 
+                    <div class="product-detail-description">
 
+                        {{ product.description }}
 
+                    </div>
 
 
-<hr class="my-5">
 
+                    <!-- STOCK -->
 
+                    <div class="stock-status">
 
 
+                        {% if product.is_in_stock %}
 
-<!-- SPECIFICATIONS -->
+                            <span class="stock-badge stock-available">
 
+                                <span class="stock-dot"></span>
 
-<h3>
+                                In Stock
 
-Product Specifications
+                            </span>
 
-</h3>
+                            <span class="stock-text">
 
+                                Available for purchase
 
+                            </span>
 
-<table class="table table-bordered">
+                        {% else %}
 
+                            <span class="stock-badge stock-unavailable">
 
-<thead class="table-dark">
+                                <span class="stock-dot"></span>
 
+                                Out of Stock
 
-<tr>
+                            </span>
 
-<th>
-Feature
-</th>
+                            <span class="stock-text">
 
+                                Currently unavailable
 
-<th>
-Value
-</th>
+                            </span>
 
+                        {% endif %}
 
-</tr>
 
+                    </div>
 
-</thead>
 
 
+                    <!-- DIVIDER -->
 
+                    <hr class="product-detail-divider">
 
-<tbody>
 
 
-{% for specification in product.specifications.all %}
+                    <!-- ADD TO CART -->
 
+                    {% if product.is_in_stock %}
 
-<tr>
+                        <a
+                            href="{% url 'add_to_cart' product.id %}"
+                            class="btn btn-primary btn-lg add-cart-button"
+                        >
 
-<td>
+                            <i class="bi bi-bag-plus"></i>
 
-{{ specification.key }}
+                            Add to Cart
 
-</td>
+                            <i class="bi bi-arrow-right ms-auto"></i>
 
+                        </a>
 
-<td>
+                    {% else %}
 
-{{ specification.value }}
+                        <button
+                            type="button"
+                            class="btn btn-secondary btn-lg add-cart-button"
+                            disabled
+                        >
 
-</td>
+                            <i class="bi bi-x-circle"></i>
 
+                            Currently Unavailable
 
-</tr>
+                        </button>
 
+                    {% endif %}
 
 
-{% empty %}
 
+                    <!-- TRUST INFORMATION -->
 
-<tr>
+                    <div class="product-trust">
 
-<td colspan="2">
 
-No specifications available.
+                        <div class="product-trust-item">
 
-</td>
+                            <i class="bi bi-shield-check"></i>
 
+                            <div>
 
-</tr>
+                                <strong>
+                                    Secure Shopping
+                                </strong>
 
+                                <small>
+                                    Your information is protected.
+                                </small>
 
+                            </div>
 
-{% endfor %}
+                        </div>
 
 
 
-</tbody>
+                        <div class="product-trust-item">
 
+                            <i class="bi bi-bag-check"></i>
 
-</table>
+                            <div>
 
+                                <strong>
+                                    Quality Products
+                                </strong>
 
+                                <small>
+                                    Carefully selected for you.
+                                </small>
 
-</div>
+                            </div>
 
+                        </div>
 
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     SPECIFICATIONS
+========================================================= -->
+
+<section class="specifications-section">
+
+    <div class="container">
+
+
+        <div
+            class="specifications-card"
+            data-reveal
+        >
+
+
+            <!-- HEADER -->
+
+            <div class="specifications-header">
+
+                <div>
+
+                    <span class="section-label">
+                        Product Information
+                    </span>
+
+                    <h2>
+                        Specifications
+                    </h2>
+
+                </div>
+
+
+                <div class="specifications-icon">
+
+                    <i class="bi bi-list-check"></i>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SPECIFICATIONS -->
+
+            <div class="specifications-list">
+
+
+                {% for specification in product.specifications.all %}
+
+
+                    <div class="specification-row">
+
+
+                        <div class="specification-key">
+
+                            {{ specification.key }}
+
+                        </div>
+
+
+                        <div class="specification-value">
+
+                            {{ specification.value }}
+
+                        </div>
+
+
+                    </div>
+
+
+                {% empty %}
+
+
+                    <div class="specifications-empty">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        <span>
+                            No specifications available for this product.
+                        </span>
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     BACK TO PRODUCTS
+========================================================= -->
+
+<section class="product-back-section">
+
+    <div class="container text-center">
+
+        <a
+            href="{% url 'all_products' %}"
+            class="product-back-link"
+        >
+
+            <i class="bi bi-arrow-left"></i>
+
+            Continue Shopping
+
+        </a>
+
+    </div>
+
+</section>
+
+
+
+{% endblock %}
+
+
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   PRODUCT DETAIL SECTION
+========================================================= */
+
+.product-detail-section {
+
+    padding: 45px 0 90px;
+
+    background-color: var(--background);
+}
+
+
+/* =========================================================
+   BREADCRUMB
+========================================================= */
+
+.product-breadcrumb {
+
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 35px;
+
+    color: var(--text-muted);
+
+    font-size: 0.8rem;
+}
+
+
+.product-breadcrumb a {
+
+    color: var(--text-secondary);
+
+    text-decoration: none;
+}
+
+
+.product-breadcrumb a:hover {
+
+    color: var(--primary);
+}
+
+
+.product-breadcrumb i {
+
+    font-size: 0.65rem;
+
+    color: var(--text-muted);
+}
+
+
+.product-breadcrumb span {
+
+    color: var(--primary);
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   PRODUCT GALLERY
+========================================================= */
+
+.product-gallery {
+
+    position: sticky;
+
+    top: 100px;
+}
+
+
+.product-main-image {
+
+    overflow: hidden;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
+
+    box-shadow: var(--shadow-sm);
+}
+
+
+.product-detail-image {
+
+    width: 100%;
+
+    height: 560px;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.5s ease;
+}
+
+
+.product-main-image:hover
+.product-detail-image {
+
+    transform: scale(1.02);
+}
+
+
+/* =========================================================
+   CAROUSEL CONTROLS
+========================================================= */
+
+.product-carousel-control {
+
+    width: 48px;
+
+    height: 48px;
+
+    top: 50%;
+
+    margin: 0 15px;
+
+    transform: translateY(-50%);
+
+    background-color: rgba(
+        15,
+        23,
+        42,
+        0.65
+    );
+
+    border-radius: 50%;
+
+    opacity: 0;
+
+    transition:
+        opacity 0.25s ease;
+}
+
+
+.product-main-image:hover
+.product-carousel-control {
+
+    opacity: 1;
+}
+
+
+.product-carousel-control:hover {
+
+    background-color: var(--primary);
+}
+
+
+/* =========================================================
+   NO IMAGE
+========================================================= */
+
+.product-detail-no-image {
+
+    height: 560px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    background-color: var(--surface-soft);
+
+    color: var(--text-muted);
+}
+
+
+.product-detail-no-image i {
+
+    font-size: 3rem;
+}
+
+
+/* =========================================================
+   THUMBNAILS
+========================================================= */
+
+.product-thumbnails {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 15px;
+
+    overflow-x: auto;
+
+    padding-bottom: 4px;
+}
+
+
+.product-thumbnail {
+
+    width: 82px;
+
+    height: 82px;
+
+    flex: 0 0 82px;
+
+    padding: 3px;
+
+    overflow: hidden;
+
+    background-color: var(--surface);
+
+    border: 2px solid var(--border);
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.product-thumbnail img {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    border-radius: 6px;
+}
+
+
+.product-thumbnail:hover {
+
+    border-color: var(--primary);
+
+    transform:
+        translateY(-2px);
+}
+
+
+.product-thumbnail.active {
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 2px
+        rgba(37, 99, 235, 0.12);
+}
+
+
+/* =========================================================
+   PRODUCT INFORMATION
+========================================================= */
+
+.product-detail-info {
+
+    padding: 15px 0;
+}
+
+
+.product-detail-brand {
+
+    display: inline-block;
+
+    margin-bottom: 10px;
+
+    color: var(--primary);
+
+    font-size: 0.78rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+}
+
+
+.product-detail-title {
+
+    margin-bottom: 12px;
+
+    color: var(--text);
+
+    font-size: clamp(
+        2rem,
+        4vw,
+        3.1rem
+    );
+
+    line-height: 1.1;
+
+    letter-spacing: -1.5px;
+
+    font-weight: 800;
+}
+
+
+.product-category {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    color: var(--text-muted);
+
+    font-size: 0.82rem;
+}
+
+
+.product-category i {
+
+    color: var(--primary);
+}
+
+
+/* =========================================================
+   PRODUCT META
+========================================================= */
+
+.product-detail-meta {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 20px;
+
+    color: var(--text-muted);
+
+    font-size: 0.8rem;
+}
+
+
+.product-detail-meta span:first-child {
+
+    color: var(--text-secondary);
+}
+
+
+.product-detail-meta i {
+
+    margin-right: 4px;
+
+    color: #f59e0b;
+}
+
+
+.meta-divider {
+
+    width: 4px;
+
+    height: 4px;
+
+    border-radius: 50%;
+
+    background-color: var(--border);
+}
+
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+.product-detail-price {
+
+    margin: 25px 0;
+
+    color: var(--primary);
+
+    font-size: 2rem;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.product-detail-description {
+
+    color: var(--text-secondary);
+
+    font-size: 0.95rem;
+
+    line-height: 1.9;
+
+    white-space: pre-line;
+}
+
+
+/* =========================================================
+   STOCK
+========================================================= */
+
+.stock-status {
+
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 25px;
+}
+
+
+.stock-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 7px 11px;
+
+    border-radius: 50px;
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+}
+
+
+.stock-dot {
+
+    width: 7px;
+
+    height: 7px;
+
+    border-radius: 50%;
+
+    background-color: currentColor;
+}
+
+
+.stock-available {
+
+    background-color: #dcfce7;
+
+    color: #15803d;
+}
+
+
+.stock-unavailable {
+
+    background-color: #fee2e2;
+
+    color: #b91c1c;
+}
+
+
+[data-theme="dark"]
+.stock-available {
+
+    background-color: #14532d;
+
+    color: #86efac;
+}
+
+
+[data-theme="dark"]
+.stock-unavailable {
+
+    background-color: #7f1d1d;
+
+    color: #fca5a5;
+}
+
+
+.stock-text {
+
+    color: var(--text-muted);
+
+    font-size: 0.8rem;
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.product-detail-divider {
+
+    margin: 28px 0;
+
+    border-color: var(--border);
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   ADD TO CART
+========================================================= */
+
+.add-cart-button {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 14px 18px;
+
+    border-radius: 10px;
+
+    font-size: 0.95rem;
+}
+
+
+.add-cart-button:hover {
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* =========================================================
+   TRUST
+========================================================= */
+
+.product-trust {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 12px;
+
+    margin-top: 25px;
+}
+
+
+.product-trust-item {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding: 14px;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+}
+
+
+.product-trust-item > i {
+
+    margin-top: 2px;
+
+    color: var(--primary);
+
+    font-size: 1.15rem;
+}
+
+
+.product-trust-item strong {
+
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: var(--text);
+
+    font-size: 0.75rem;
+}
+
+
+.product-trust-item small {
+
+    display: block;
+
+    color: var(--text-muted);
+
+    font-size: 0.68rem;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   SPECIFICATIONS
+========================================================= */
+
+.specifications-section {
+
+    padding: 90px 0;
+
+    background-color: var(--surface);
+}
+
+
+.specifications-card {
+
+    overflow: hidden;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
+
+    box-shadow: var(--shadow-sm);
+}
+
+
+.specifications-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 30px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.specifications-header h2 {
+
+    margin: 5px 0 0;
+
+    color: var(--text);
+
+    font-size: 1.7rem;
+
+    font-weight: 800;
+}
+
+
+.specifications-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 12px;
+
+    font-size: 1.2rem;
+}
+
+
+/* =========================================================
+   SPECIFICATION ROWS
+========================================================= */
+
+.specifications-list {
+
+    padding: 0 30px;
+}
+
+
+.specification-row {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(160px, 0.7fr)
+        1.3fr;
+
+    gap: 30px;
+
+    padding: 18px 0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.specification-row:last-child {
+
+    border-bottom: none;
+}
+
+
+.specification-key {
+
+    color: var(--text-muted);
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+}
+
+
+.specification-value {
+
+    color: var(--text);
+
+    font-size: 0.9rem;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   EMPTY SPECIFICATIONS
+========================================================= */
+
+.specifications-empty {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 30px 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.85rem;
+}
+
+
+.specifications-empty i {
+
+    color: var(--primary);
+}
+
+
+/* =========================================================
+   BACK LINK
+========================================================= */
+
+.product-back-section {
+
+    padding: 50px 0 80px;
+
+    background-color: var(--surface);
+}
+
+
+.product-back-link {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--primary);
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        gap 0.2s ease;
+}
+
+
+.product-back-link:hover {
+
+    gap: 12px;
+
+    color: var(--primary-dark);
+}
+
+
+/* =========================================================
+   SCROLL REVEAL
+========================================================= */
+
+[data-reveal] {
+
+    opacity: 0;
+
+    transform:
+        translateY(25px);
+
+    transition:
+        opacity 0.7s ease,
+        transform 0.7s ease;
+}
+
+
+[data-reveal].revealed {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .product-detail-section {
+
+        padding-top: 35px;
+    }
+
+
+    .product-gallery {
+
+        position: static;
+    }
+
+
+    .product-detail-image,
+    .product-detail-no-image {
+
+        height: 500px;
+    }
+
+}
+
+
+@media (max-width: 767px) {
+
+    .product-detail-section {
+
+        padding: 30px 0 65px;
+    }
+
+
+    .product-detail-image,
+    .product-detail-no-image {
+
+        height: 400px;
+    }
+
+
+    .product-detail-title {
+
+        font-size: 2.2rem;
+    }
+
+
+    .product-detail-price {
+
+        font-size: 1.7rem;
+    }
+
+
+    .product-trust {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .specifications-section {
+
+        padding: 65px 0;
+    }
+
+
+    .specifications-header {
+
+        padding: 22px;
+    }
+
+
+    .specifications-list {
+
+        padding: 0 22px;
+    }
+
+
+    .specification-row {
+
+        grid-template-columns: 1fr;
+
+        gap: 5px;
+    }
+
+}
+
+
+@media (max-width: 575px) {
+
+    .product-detail-image,
+    .product-detail-no-image {
+
+        height: 330px;
+    }
+
+
+    .product-thumbnail {
+
+        width: 68px;
+
+        height: 68px;
+
+        flex-basis: 68px;
+    }
+
+
+    .product-detail-title {
+
+        font-size: 1.9rem;
+    }
+
+
+    .product-detail-meta {
+
+        flex-wrap: wrap;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    [data-reveal] {
+
+        transition: none;
+    }
+
+}
+
+</style>
+
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* ==========================================
+           SCROLL REVEAL
+        ========================================== */
+
+        const revealElements =
+            document.querySelectorAll(
+                "[data-reveal]"
+            );
+
+
+        if (
+            "IntersectionObserver"
+            in window
+        ) {
+
+
+            const observer =
+                new IntersectionObserver(
+                    function (entries) {
+
+                        entries.forEach(
+                            function (entry) {
+
+                                if (
+                                    entry.isIntersecting
+                                ) {
+
+                                    entry.target.classList.add(
+                                        "revealed"
+                                    );
+
+                                    observer.unobserve(
+                                        entry.target
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    },
+                    {
+                        threshold: 0.10
+                    }
+                );
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    observer.observe(
+                        element
+                    );
+
+                }
+            );
+
+
+        } else {
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    element.classList.add(
+                        "revealed"
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* ==========================================
+           ACTIVE PRODUCT THUMBNAIL
+        ========================================== */
+
+        const carousel =
+            document.getElementById(
+                "productCarousel"
+            );
+
+
+        const thumbnails =
+            document.querySelectorAll(
+                ".product-thumbnail"
+            );
+
+
+        if (carousel && thumbnails.length) {
+
+
+            carousel.addEventListener(
+                "slid.bs.carousel",
+                function (event) {
+
+                    thumbnails.forEach(
+                        function (thumbnail) {
+
+                            thumbnail.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+
+                    if (
+                        thumbnails[event.to]
+                    ) {
+
+                        thumbnails[event.to]
+                            .classList.add(
+                                "active"
+                            );
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
 
 {% endblock %}

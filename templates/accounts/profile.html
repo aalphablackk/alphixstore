@@ -2,490 +2,515 @@
 
 {% load crispy_forms_tags %}
 
+
 {% block title %}
 Profile | Alphix Store
 {% endblock %}
 
 
+
 {% block content %}
 
-<div class="container py-5">
+<section class="profile-section">
 
-    <!-- PAGE HEADER -->
+    <div class="container">
 
-    <div class="row justify-content-center mb-4">
 
-        <div class="col-lg-8">
+        <!-- =====================================================
+             PAGE HEADER
+        ====================================================== -->
 
-            <div class="d-flex justify-content-between align-items-center">
+        <div
+            class="profile-page-header"
+            data-reveal
+        >
 
-                <div>
+            <div>
 
-                    <h2 class="fw-bold mb-1">
-                        My Profile
-                    </h2>
+                <span class="section-label">
+                    Account
+                </span>
 
-                    <p class="text-muted mb-0">
-                        Manage your personal information and account details.
-                    </p>
+                <h1>
+                    My Profile
+                </h1>
 
-                </div>
-
-                <div class="d-none d-md-block">
-
-                    <span class="badge bg-light text-dark border px-3 py-2">
-
-                        <i class="bi bi-person-circle me-1"></i>
-
-                        Account
-
-                    </span>
-
-                </div>
+                <p>
+                    Manage your personal information and account
+                    preferences.
+                </p>
 
             </div>
 
+
+            <a
+                href="{% url 'my_orders' %}"
+                class="profile-orders-link"
+            >
+
+                <i class="bi bi-receipt"></i>
+
+                My Orders
+
+            </a>
+
         </div>
 
-    </div>
+
+
+        <div
+            class="profile-layout"
+            data-reveal
+        >
+
+
+            <!-- =================================================
+                 PROFILE HEADER CARD
+            ================================================== -->
+
+            <div class="profile-card profile-hero">
+
+
+                <div class="profile-hero-background"></div>
+
+
+                <div class="profile-hero-content">
+
+
+                    <!-- PROFILE IMAGE -->
+
+                    <div class="profile-avatar-wrapper">
+
+
+                        {% if profile.profile_picture %}
+
+                            <img
+                                src="{{ profile.profile_picture.url }}"
+                                alt="Profile Picture"
+                                class="profile-avatar"
+                            >
+
+                        {% else %}
+
+                            <div class="profile-avatar profile-avatar-placeholder">
+
+                                <i class="bi bi-person"></i>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <span
+                            class="profile-online-dot"
+                            title="Active account"
+                        ></span>
+
+
+                    </div>
 
 
 
-    <div class="row justify-content-center">
+                    <!-- PROFILE NAME -->
 
-        <div class="col-lg-8">
-
-
-            <!-- PROFILE CARD -->
-
-            <div class="card border-0 shadow-sm overflow-hidden">
+                    <div class="profile-identity">
 
 
-                <!-- PROFILE TOP -->
+                        <span class="profile-account-label">
 
-                <div class="bg-dark text-white p-4">
+                            <i class="bi bi-person-check"></i>
 
-                    <div class="row align-items-center">
+                            Account
 
-
-                        <!-- PROFILE IMAGE -->
-
-                        <div class="col-md-auto text-center mb-3 mb-md-0">
+                        </span>
 
 
-                            {% if profile.profile_picture %}
+                        <h2>
 
-                                <img
-                                    src="{{ profile.profile_picture.url }}"
-                                    alt="Profile Picture"
-                                    class="rounded-circle border border-4 border-white shadow"
-                                    width="130"
-                                    height="130"
-                                    style="object-fit: cover;"
-                                >
+                            {% if request.user.first_name or request.user.last_name %}
+
+                                {{ request.user.first_name }}
+                                {{ request.user.last_name }}
 
                             {% else %}
 
-                                <div
-                                    class="rounded-circle bg-white text-dark d-flex align-items-center justify-content-center mx-auto shadow"
-                                    style="width: 130px; height: 130px;"
-                                >
-
-                                    <i
-                                        class="bi bi-person-fill"
-                                        style="font-size: 4.5rem;"
-                                    ></i>
-
-                                </div>
+                                {{ request.user.username }}
 
                             {% endif %}
 
-                        </div>
+                        </h2>
 
 
-
-                        <!-- PROFILE NAME -->
-
-                        <div class="col-md">
-
-                            <div class="text-center text-md-start">
-
-
-                                <h2 class="fw-bold mb-1">
-
-                                    {% if request.user.first_name or request.user.last_name %}
-
-                                        {{ request.user.first_name }}
-                                        {{ request.user.last_name }}
-
-                                    {% else %}
-
-                                        {{ request.user.username }}
-
-                                    {% endif %}
-
-                                </h2>
-
-
-                                <p class="text-white-50 mb-3">
-
-                                    @{{ request.user.username }}
-
-                                </p>
-
-
-
-                                <!-- ROLES -->
-
-                                <div>
-
-                                    {% for role in profile.role.all %}
-
-                                        <span class="badge bg-primary rounded-pill px-3 py-2 me-1">
-
-                                            <i class="bi bi-shield-check me-1"></i>
-
-                                            {{ role.get_name_display }}
-
-                                        </span>
-
-                                    {% empty %}
-
-                                        <span class="badge bg-secondary rounded-pill px-3 py-2">
-
-                                            No role assigned
-
-                                        </span>
-
-                                    {% endfor %}
-
-                                </div>
-
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- PROFILE DETAILS -->
-
-                <div class="card-body p-4 p-md-5">
-
-
-                    <div class="d-flex align-items-center mb-4">
-
-                        <div
-                            class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3"
-                            style="width: 42px; height: 42px;"
-                        >
-
-                            <i class="bi bi-person-lines-fill"></i>
-
-                        </div>
-
-                        <div>
-
-                            <h5 class="fw-bold mb-0">
-                                Personal Information
-                            </h5>
-
-                            <small class="text-muted">
-                                Your account details
-                            </small>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="row g-3">
-
-
-                        <!-- USERNAME -->
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded-3 p-3 h-100">
-
-                                <div class="d-flex align-items-center mb-2">
-
-                                    <i class="bi bi-at text-primary me-2"></i>
-
-                                    <small class="text-muted">
-                                        Username
-                                    </small>
-
-                                </div>
-
-                                <div class="fw-semibold">
-
-                                    {{ request.user.username }}
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- EMAIL -->
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded-3 p-3 h-100">
-
-                                <div class="d-flex align-items-center mb-2">
-
-                                    <i class="bi bi-envelope text-primary me-2"></i>
-
-                                    <small class="text-muted">
-                                        Email
-                                    </small>
-
-                                </div>
-
-                                <div class="fw-semibold text-break">
-
-                                    {% if request.user.email %}
-
-                                        {{ request.user.email }}
-
-                                    {% else %}
-
-                                        <span class="text-muted">
-                                            Not provided
-                                        </span>
-
-                                    {% endif %}
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- FIRST NAME -->
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded-3 p-3 h-100">
-
-                                <div class="d-flex align-items-center mb-2">
-
-                                    <i class="bi bi-person text-primary me-2"></i>
-
-                                    <small class="text-muted">
-                                        First Name
-                                    </small>
-
-                                </div>
-
-                                <div class="fw-semibold">
-
-                                    {% if request.user.first_name %}
-
-                                        {{ request.user.first_name }}
-
-                                    {% else %}
-
-                                        <span class="text-muted">
-                                            Not provided
-                                        </span>
-
-                                    {% endif %}
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- LAST NAME -->
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded-3 p-3 h-100">
-
-                                <div class="d-flex align-items-center mb-2">
-
-                                    <i class="bi bi-person text-primary me-2"></i>
-
-                                    <small class="text-muted">
-                                        Last Name
-                                    </small>
-
-                                </div>
-
-                                <div class="fw-semibold">
-
-                                    {% if request.user.last_name %}
-
-                                        {{ request.user.last_name }}
-
-                                    {% else %}
-
-                                        <span class="text-muted">
-                                            Not provided
-                                        </span>
-
-                                    {% endif %}
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- PHONE -->
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded-3 p-3 h-100">
-
-                                <div class="d-flex align-items-center mb-2">
-
-                                    <i class="bi bi-telephone text-primary me-2"></i>
-
-                                    <small class="text-muted">
-                                        Phone Number
-                                    </small>
-
-                                </div>
-
-                                <div class="fw-semibold">
-
-                                    {% if profile.phone_number %}
-
-                                        {{ profile.phone_number }}
-
-                                    {% else %}
-
-                                        <span class="text-muted">
-                                            Not provided
-                                        </span>
-
-                                    {% endif %}
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- GENDER -->
-
-                        <div class="col-md-6">
-
-                            <div class="bg-light rounded-3 p-3 h-100">
-
-                                <div class="d-flex align-items-center mb-2">
-
-                                    <i class="bi bi-gender-ambiguous text-primary me-2"></i>
-
-                                    <small class="text-muted">
-                                        Gender
-                                    </small>
-
-                                </div>
-
-                                <div class="fw-semibold">
-
-                                    {% if profile.gender %}
-
-                                        {{ profile.get_gender_display }}
-
-                                    {% else %}
-
-                                        <span class="text-muted">
-                                            Not provided
-                                        </span>
-
-                                    {% endif %}
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- ADDRESS -->
-
-                        <div class="col-12">
-
-                            <div class="bg-light rounded-3 p-3">
-
-                                <div class="d-flex align-items-center mb-2">
-
-                                    <i class="bi bi-geo-alt text-primary me-2"></i>
-
-                                    <small class="text-muted">
-                                        Address
-                                    </small>
-
-                                </div>
-
-                                <div class="fw-semibold">
-
-                                    {% if profile.address %}
-
-                                        {{ profile.address }}
-
-                                    {% else %}
-
-                                        <span class="text-muted">
-                                            No address provided
-                                        </span>
-
-                                    {% endif %}
-
-                                </div>
-
-                            </div>
-
-                        </div>
+                        <p>
+                            @{{ request.user.username }}
+                        </p>
 
 
 
                         <!-- ROLES -->
 
-                        <div class="col-12">
+                        <div class="profile-roles">
 
-                            <div class="bg-light rounded-3 p-3">
+                            {% for role in profile.role.all %}
 
-                                <div class="d-flex align-items-center mb-3">
+                                <span class="profile-role">
 
-                                    <i class="bi bi-shield-check text-primary me-2"></i>
+                                    <i class="bi bi-shield-check"></i>
 
-                                    <small class="text-muted">
-                                        Account Roles
-                                    </small>
+                                    {{ role.get_name_display }}
 
-                                </div>
+                                </span>
 
+                            {% empty %}
+
+                                <span class="profile-role profile-role-muted">
+
+                                    No role assigned
+
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ACCOUNT INFORMATION
+            ================================================== -->
+
+            <div class="profile-card">
+
+
+                <div class="profile-card-header">
+
+
+                    <div>
+
+                        <span class="section-label">
+                            Account Details
+                        </span>
+
+                        <h2>
+                            Personal Information
+                        </h2>
+
+                        <p>
+                            Information associated with your account.
+                        </p>
+
+                    </div>
+
+
+                    <div class="profile-card-icon">
+
+                        <i class="bi bi-person-lines-fill"></i>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="profile-information-grid">
+
+
+                    <!-- USERNAME -->
+
+                    <div class="profile-information-item">
+
+                        <div class="profile-information-icon">
+
+                            <i class="bi bi-at"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Username
+                            </span>
+
+                            <strong>
+                                {{ request.user.username }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- EMAIL -->
+
+                    <div class="profile-information-item">
+
+                        <div class="profile-information-icon">
+
+                            <i class="bi bi-envelope"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Email
+                            </span>
+
+                            <strong class="text-break">
+
+                                {% if request.user.email %}
+
+                                    {{ request.user.email }}
+
+                                {% else %}
+
+                                    <em>
+                                        Not provided
+                                    </em>
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- FIRST NAME -->
+
+                    <div class="profile-information-item">
+
+                        <div class="profile-information-icon">
+
+                            <i class="bi bi-person"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                First Name
+                            </span>
+
+                            <strong>
+
+                                {% if request.user.first_name %}
+
+                                    {{ request.user.first_name }}
+
+                                {% else %}
+
+                                    <em>
+                                        Not provided
+                                    </em>
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- LAST NAME -->
+
+                    <div class="profile-information-item">
+
+                        <div class="profile-information-icon">
+
+                            <i class="bi bi-person"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Last Name
+                            </span>
+
+                            <strong>
+
+                                {% if request.user.last_name %}
+
+                                    {{ request.user.last_name }}
+
+                                {% else %}
+
+                                    <em>
+                                        Not provided
+                                    </em>
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- PHONE -->
+
+                    <div class="profile-information-item">
+
+                        <div class="profile-information-icon">
+
+                            <i class="bi bi-telephone"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Phone Number
+                            </span>
+
+                            <strong>
+
+                                {% if profile.phone_number %}
+
+                                    {{ profile.phone_number }}
+
+                                {% else %}
+
+                                    <em>
+                                        Not provided
+                                    </em>
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- GENDER -->
+
+                    <div class="profile-information-item">
+
+                        <div class="profile-information-icon">
+
+                            <i class="bi bi-gender-ambiguous"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Gender
+                            </span>
+
+                            <strong>
+
+                                {% if profile.gender %}
+
+                                    {{ profile.get_gender_display }}
+
+                                {% else %}
+
+                                    <em>
+                                        Not provided
+                                    </em>
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ADDRESS -->
+
+                    <div class="profile-information-item profile-information-wide">
+
+                        <div class="profile-information-icon">
+
+                            <i class="bi bi-geo-alt"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Address
+                            </span>
+
+                            <strong>
+
+                                {% if profile.address %}
+
+                                    {{ profile.address }}
+
+                                {% else %}
+
+                                    <em>
+                                        No address provided
+                                    </em>
+
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ROLES -->
+
+                    <div class="profile-information-wide profile-roles-box">
+
+                        <div class="profile-information-icon">
+
+                            <i class="bi bi-shield-check"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Account Roles
+                            </span>
+
+
+                            <div class="profile-role-list">
 
                                 {% for role in profile.role.all %}
 
-                                    <span class="badge bg-primary rounded-pill px-3 py-2 me-1 mb-1">
+                                    <span class="profile-role">
 
-                                        <i class="bi bi-check-circle me-1"></i>
+                                        <i class="bi bi-check-circle"></i>
 
                                         {{ role.get_name_display }}
 
@@ -493,9 +518,9 @@ Profile | Alphix Store
 
                                 {% empty %}
 
-                                    <span class="text-muted">
+                                    <em>
                                         No role assigned
-                                    </span>
+                                    </em>
 
                                 {% endfor %}
 
@@ -503,57 +528,59 @@ Profile | Alphix Store
 
                         </div>
 
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     ACTIONS
+                ================================================== -->
+
+                <div class="profile-actions">
+
+
+                    <div class="profile-security-note">
+
+                        <i class="bi bi-shield-check"></i>
+
+                        <span>
+                            Keep your account information up to date.
+                        </span>
 
                     </div>
 
 
-
-                    <!-- ACTIONS -->
-
-                    <div class="border-top mt-4 pt-4">
-
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+                    <div class="profile-action-buttons">
 
 
-                            <div>
+                        <button
+                            type="button"
+                            class="profile-edit-button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editProfileModal"
+                        >
 
-                                <small class="text-muted">
+                            <i class="bi bi-pencil-square"></i>
 
-                                    <i class="bi bi-shield-lock me-1"></i>
+                            Edit Profile
 
-                                    Keep your account information up to date.
-
-                                </small>
-
-                            </div>
-
-
-                            <button
-                                type="button"
-                                class="btn btn-primary px-4"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editProfileModal"
-                            >
-
-                                <i class="bi bi-pencil-square me-1"></i>
-
-                                Edit Profile
-
-                            </button>
-
-                            <a
-                                href="{% url 'password_change' %}"
-                                class="btn btn-outline-dark"
-                            >
-
-                                <i class="bi bi-shield-lock me-1"></i>
-
-                                Change Password
-
-                            </a>
+                        </button>
 
 
-                        </div>
+                        <a
+                            href="{% url 'password_change' %}"
+                            class="profile-password-button"
+                        >
+
+                            <i class="bi bi-shield-lock"></i>
+
+                            Change Password
+
+                        </a>
+
 
                     </div>
 
@@ -566,15 +593,16 @@ Profile | Alphix Store
 
         </div>
 
+
     </div>
 
-</div>
+</section>
 
 
 
-<!-- ================================================= -->
-<!-- EDIT PROFILE MODAL -->
-<!-- ================================================= -->
+<!-- =========================================================
+     EDIT PROFILE MODAL
+========================================================= -->
 
 <div
     class="modal fade"
@@ -584,25 +612,35 @@ Profile | Alphix Store
     aria-hidden="true"
 >
 
+
     <div class="modal-dialog modal-lg modal-dialog-centered">
 
-        <div class="modal-content">
+
+        <div class="modal-content profile-modal">
 
 
-            <!-- MODAL HEADER -->
+            <!-- HEADER -->
 
-            <div class="modal-header">
+            <div class="modal-header profile-modal-header">
 
-                <h5
-                    class="modal-title"
-                    id="editProfileModalLabel"
-                >
 
-                    <i class="bi bi-person-gear me-2"></i>
+                <div>
 
-                    Edit Profile
+                    <span class="section-label">
+                        Account Settings
+                    </span>
 
-                </h5>
+
+                    <h2
+                        class="modal-title"
+                        id="editProfileModalLabel"
+                    >
+
+                        Edit Profile
+
+                    </h2>
+
+                </div>
 
 
                 <button
@@ -611,6 +649,7 @@ Profile | Alphix Store
                     data-bs-dismiss="modal"
                     aria-label="Close"
                 ></button>
+
 
             </div>
 
@@ -626,48 +665,96 @@ Profile | Alphix Store
                 {% csrf_token %}
 
 
-                <div class="modal-body">
+                <div class="modal-body profile-modal-body">
 
 
-                    <!-- USER INFORMATION -->
+                    <!-- USER -->
 
-                    <h6 class="fw-bold mb-3">
-
-                        Personal Information
-
-                    </h6>
+                    <div class="profile-form-section">
 
 
-                    {{ user_form|crispy }}
+                        <div class="profile-form-heading">
+
+                            <div class="profile-form-icon">
+
+                                <i class="bi bi-person"></i>
+
+                            </div>
 
 
-                    <hr class="my-4">
+                            <div>
+
+                                <h3>
+                                    Personal Information
+                                </h3>
+
+                                <p>
+                                    Update your basic account information.
+                                </p>
+
+                            </div>
+
+                        </div>
 
 
-                    <!-- PROFILE INFORMATION -->
-
-                    <h6 class="fw-bold mb-3">
-
-                        Profile Information
-
-                    </h6>
+                        {{ user_form|crispy }}
 
 
-                    {{ profile_form|crispy }}
+                    </div>
+
+
+
+                    <div class="profile-form-divider"></div>
+
+
+
+                    <!-- PROFILE -->
+
+                    <div class="profile-form-section">
+
+
+                        <div class="profile-form-heading">
+
+                            <div class="profile-form-icon">
+
+                                <i class="bi bi-person-badge"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <h3>
+                                    Profile Information
+                                </h3>
+
+                                <p>
+                                    Update your contact and profile details.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        {{ profile_form|crispy }}
+
+
+                    </div>
 
 
                 </div>
 
 
 
-                <!-- MODAL FOOTER -->
+                <!-- FOOTER -->
 
-                <div class="modal-footer">
+                <div class="modal-footer profile-modal-footer">
 
 
                     <button
                         type="button"
-                        class="btn btn-secondary"
+                        class="profile-modal-cancel"
                         data-bs-dismiss="modal"
                     >
 
@@ -678,10 +765,10 @@ Profile | Alphix Store
 
                     <button
                         type="submit"
-                        class="btn btn-primary"
+                        class="profile-modal-save"
                     >
 
-                        <i class="bi bi-check-circle me-1"></i>
+                        <i class="bi bi-check-lg"></i>
 
                         Save Changes
 
@@ -696,9 +783,1248 @@ Profile | Alphix Store
 
         </div>
 
+
     </div>
 
 </div>
+
+
+{% endblock %}
+
+
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   PROFILE SECTION
+========================================================= */
+
+.profile-section {
+
+    padding: 50px 0 100px;
+
+    background-color: var(--background);
+
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.profile-page-header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 30px;
+
+}
+
+
+.profile-page-header h1 {
+
+    margin: 5px 0 7px;
+
+    color: var(--text);
+
+    font-size: 2rem;
+
+    font-weight: 800;
+
+    letter-spacing: -0.8px;
+
+}
+
+
+.profile-page-header p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.8rem;
+
+}
+
+
+.profile-orders-link {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px 15px;
+
+    color: var(--primary);
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    font-size: 0.75rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+
+}
+
+
+.profile-orders-link:hover {
+
+    color: var(--primary);
+
+    background-color: var(--surface-soft);
+
+    transform: translateY(-2px);
+
+}
+
+
+/* =========================================================
+   LAYOUT
+========================================================= */
+
+.profile-layout {
+
+    max-width: 900px;
+
+    margin: 0 auto;
+
+}
+
+
+.profile-card {
+
+    margin-bottom: 20px;
+
+    overflow: hidden;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
+
+    box-shadow: var(--shadow-sm);
+
+}
+
+
+/* =========================================================
+   PROFILE HERO
+========================================================= */
+
+.profile-hero {
+
+    position: relative;
+
+    min-height: 230px;
+
+}
+
+
+.profile-hero-background {
+
+    position: absolute;
+
+    inset: 0;
+
+    height: 115px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary-dark),
+            var(--primary)
+        );
+
+}
+
+
+.profile-hero-background::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+
+    height: 180px;
+
+    top: -90px;
+
+    right: 10%;
+
+    background-color: rgba(255,255,255,0.08);
+
+    border-radius: 50%;
+
+}
+
+
+.profile-hero-content {
+
+    position: relative;
+
+    z-index: 1;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 22px;
+
+    padding: 55px 30px 28px;
+
+}
+
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+.profile-avatar-wrapper {
+
+    position: relative;
+
+    flex-shrink: 0;
+
+}
+
+
+.profile-avatar {
+
+    width: 115px;
+
+    height: 115px;
+
+    display: block;
+
+    object-fit: cover;
+
+    background-color: var(--surface);
+
+    border: 5px solid var(--surface);
+
+    border-radius: 50%;
+
+    box-shadow: var(--shadow);
+
+}
+
+
+.profile-avatar-placeholder {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: var(--primary);
+
+    font-size: 3.2rem;
+
+}
+
+
+.profile-online-dot {
+
+    position: absolute;
+
+    right: 8px;
+
+    bottom: 7px;
+
+    width: 17px;
+
+    height: 17px;
+
+    background-color: #22c55e;
+
+    border: 3px solid var(--surface);
+
+    border-radius: 50%;
+
+}
+
+
+/* =========================================================
+   IDENTITY
+========================================================= */
+
+.profile-identity {
+
+    padding-bottom: 5px;
+
+}
+
+
+.profile-account-label {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-bottom: 5px;
+
+    color: var(--primary);
+
+    font-size: 0.65rem;
+
+    font-weight: 700;
+
+}
+
+
+.profile-identity h2 {
+
+    margin: 0 0 3px;
+
+    color: var(--text);
+
+    font-size: 1.55rem;
+
+    font-weight: 800;
+
+}
+
+
+.profile-identity > p {
+
+    margin: 0 0 10px;
+
+    color: var(--text-muted);
+
+    font-size: 0.72rem;
+
+}
+
+
+/* =========================================================
+   ROLES
+========================================================= */
+
+.profile-roles {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+}
+
+
+.profile-role {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 6px 9px;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 50px;
+
+    font-size: 0.63rem;
+
+    font-weight: 700;
+
+}
+
+
+.profile-role-muted {
+
+    background-color: var(--surface-soft);
+
+    color: var(--text-muted);
+
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.profile-card-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 25px 30px;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.profile-card-header h2 {
+
+    margin: 5px 0 5px;
+
+    color: var(--text);
+
+    font-size: 1.15rem;
+
+    font-weight: 800;
+
+}
+
+
+.profile-card-header p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.7rem;
+
+}
+
+
+.profile-card-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 10px;
+
+}
+
+
+/* =========================================================
+   INFORMATION GRID
+========================================================= */
+
+.profile-information-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+
+    padding: 25px 30px;
+
+}
+
+
+.profile-information-item,
+.profile-information-wide {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    min-width: 0;
+
+    padding: 15px;
+
+    background-color: var(--surface-soft);
+
+    border: 1px solid var(--border);
+
+    border-radius: 11px;
+
+}
+
+
+.profile-information-wide {
+
+    grid-column: 1 / -1;
+
+}
+
+
+.profile-information-icon {
+
+    width: 34px;
+
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 8px;
+
+    font-size: 0.78rem;
+
+}
+
+
+.profile-information-item > div:last-child,
+.profile-information-wide > div:last-child {
+
+    min-width: 0;
+
+}
+
+
+.profile-information-item span,
+.profile-information-wide span {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--text-muted);
+
+    font-size: 0.62rem;
+
+    font-weight: 600;
+
+}
+
+
+.profile-information-item strong,
+.profile-information-wide strong {
+
+    display: block;
+
+    color: var(--text);
+
+    font-size: 0.76rem;
+
+    font-weight: 700;
+
+    line-height: 1.5;
+
+}
+
+
+.profile-information-item em,
+.profile-information-wide em {
+
+    color: var(--text-muted);
+
+    font-style: normal;
+
+    font-weight: 500;
+
+}
+
+
+/* =========================================================
+   ROLES BOX
+========================================================= */
+
+.profile-roles-box {
+
+    align-items: flex-start;
+
+}
+
+
+.profile-role-list {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.profile-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px 30px;
+
+    border-top: 1px solid var(--border);
+
+}
+
+
+.profile-security-note {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: var(--text-muted);
+
+    font-size: 0.65rem;
+
+}
+
+
+.profile-security-note i {
+
+    color: var(--primary);
+
+}
+
+
+.profile-action-buttons {
+
+    display: flex;
+
+    gap: 8px;
+
+}
+
+
+.profile-edit-button,
+.profile-password-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    font-size: 0.7rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    text-decoration: none;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+
+}
+
+
+.profile-edit-button {
+
+    background-color: var(--primary);
+
+    color: white;
+
+    border: 1px solid var(--primary);
+
+}
+
+
+.profile-edit-button:hover {
+
+    background-color: var(--primary-dark);
+
+    color: white;
+
+    transform: translateY(-2px);
+
+}
+
+
+.profile-password-button {
+
+    background-color: var(--surface);
+
+    color: var(--text-secondary);
+
+    border: 1px solid var(--border);
+
+}
+
+
+.profile-password-button:hover {
+
+    background-color: var(--surface-soft);
+
+    color: var(--text);
+
+    transform: translateY(-2px);
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.profile-modal {
+
+    overflow: hidden;
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border: 1px solid var(--border);
+
+    border-radius: 15px;
+
+}
+
+
+.profile-modal-header {
+
+    padding: 22px 25px;
+
+    background-color: var(--surface);
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+.profile-modal-header h2 {
+
+    margin-top: 5px;
+
+    color: var(--text);
+
+    font-size: 1.15rem;
+
+    font-weight: 800;
+
+}
+
+
+.profile-modal .btn-close {
+
+    filter:
+        var(--bs-btn-close-filter, none);
+
+}
+
+
+.profile-modal-body {
+
+    max-height: 70vh;
+
+    overflow-y: auto;
+
+    padding: 25px;
+
+}
+
+
+.profile-form-section h3 {
+
+    margin: 0 0 4px;
+
+    color: var(--text);
+
+    font-size: 0.9rem;
+
+    font-weight: 800;
+
+}
+
+
+.profile-form-section p {
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.68rem;
+
+}
+
+
+.profile-form-heading {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.profile-form-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background-color: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 9px;
+
+}
+
+
+.profile-form-divider {
+
+    height: 1px;
+
+    margin: 28px 0;
+
+    background-color: var(--border);
+
+}
+
+
+/* =========================================================
+   MODAL FORM
+========================================================= */
+
+.profile-modal .form-label {
+
+    color: var(--text);
+
+    font-size: 0.75rem;
+
+    font-weight: 600;
+
+}
+
+
+.profile-modal .form-control,
+.profile-modal .form-select {
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border-color: var(--border);
+
+    border-radius: 8px;
+
+}
+
+
+.profile-modal .form-control:focus,
+.profile-modal .form-select:focus {
+
+    background-color: var(--surface);
+
+    color: var(--text);
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.10);
+
+}
+
+
+.profile-modal .form-text {
+
+    color: var(--text-muted);
+
+    font-size: 0.65rem;
+
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.profile-modal-footer {
+
+    padding: 16px 25px;
+
+    background-color: var(--surface-soft);
+
+    border-top: 1px solid var(--border);
+
+}
+
+
+.profile-modal-cancel,
+.profile-modal-save {
+
+    padding: 9px 14px;
+
+    border-radius: 8px;
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+}
+
+
+.profile-modal-cancel {
+
+    background-color: var(--surface);
+
+    color: var(--text-secondary);
+
+    border: 1px solid var(--border);
+
+}
+
+
+.profile-modal-save {
+
+    background-color: var(--primary);
+
+    color: white;
+
+    border: 1px solid var(--primary);
+
+}
+
+
+.profile-modal-save:hover {
+
+    background-color: var(--primary-dark);
+
+}
+
+
+/* =========================================================
+   PAGE REVEAL
+========================================================= */
+
+[data-reveal] {
+
+    opacity: 0;
+
+    transform:
+        translateY(20px);
+
+    transition:
+        opacity 0.6s ease,
+        transform 0.6s ease;
+
+}
+
+
+[data-reveal].revealed {
+
+    opacity: 1;
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .profile-section {
+
+        padding: 40px 0 70px;
+
+    }
+
+
+    .profile-page-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        margin-bottom: 25px;
+
+    }
+
+
+    .profile-page-header h1 {
+
+        font-size: 1.7rem;
+
+    }
+
+
+    .profile-hero-content {
+
+        align-items: center;
+
+        flex-direction: column;
+
+        padding: 45px 20px 25px;
+
+        text-align: center;
+
+    }
+
+
+    .profile-roles {
+
+        justify-content: center;
+
+    }
+
+
+    .profile-information-grid {
+
+        grid-template-columns: 1fr;
+
+        padding: 20px;
+
+    }
+
+
+    .profile-information-wide {
+
+        grid-column: auto;
+
+    }
+
+
+    .profile-card-header {
+
+        padding: 20px;
+
+    }
+
+
+    .profile-actions {
+
+        align-items: stretch;
+
+        flex-direction: column;
+
+        padding: 20px;
+
+    }
+
+
+    .profile-action-buttons {
+
+        flex-direction: column;
+
+    }
+
+
+    .profile-edit-button,
+    .profile-password-button {
+
+        width: 100%;
+
+    }
+
+
+    .profile-modal-body {
+
+        padding: 20px;
+
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .profile-avatar {
+
+        width: 100px;
+
+        height: 100px;
+
+    }
+
+
+    .profile-hero {
+
+        min-height: 240px;
+
+    }
+
+
+    .profile-identity h2 {
+
+        font-size: 1.35rem;
+
+    }
+
+
+    .profile-information-item,
+    .profile-information-wide {
+
+        padding: 12px;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    [data-reveal] {
+
+        transition: none;
+
+    }
+
+}
+
+</style>
+
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const revealElements =
+            document.querySelectorAll(
+                "[data-reveal]"
+            );
+
+
+        if (
+            "IntersectionObserver"
+            in window
+        ) {
+
+
+            const observer =
+                new IntersectionObserver(
+                    function (entries) {
+
+                        entries.forEach(
+                            function (entry) {
+
+                                if (
+                                    entry.isIntersecting
+                                ) {
+
+                                    entry.target.classList.add(
+                                        "revealed"
+                                    );
+
+                                    observer.unobserve(
+                                        entry.target
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    },
+                    {
+                        threshold: 0.08
+                    }
+
+                );
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    observer.observe(
+                        element
+                    );
+
+                }
+            );
+
+
+        } else {
+
+
+            revealElements.forEach(
+                function (element) {
+
+                    element.classList.add(
+                        "revealed"
+                    );
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
 
 
 {% endblock %}

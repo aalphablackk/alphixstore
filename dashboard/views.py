@@ -1,5 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Sum, Count
+from orders.models import Order
+from django.contrib.auth.models import User
+from django.db.models.functions import TruncDate
+
 # from accounts.decorators import role_required
 # from django.contrib.auth.decorators import user_passes_test
 
@@ -27,19 +32,205 @@ from products.forms import (
 # Dashboard Home
 @login_required
 @user_passes_test(is_staff, login_url="/")
+@login_required
+@user_passes_test(is_staff, login_url="/")
 def dashboard_home(request):
 
+    # ==========================================
+    # BASIC STATISTICS
+    # ==========================================
+
     total_products = Product.objects.count()
+
     total_categories = Category.objects.count()
+
+    total_orders = Order.objects.count()
+
+    total_customers = User.objects.filter(
+        is_staff=False
+    ).count()
+
+
+    # ==========================================
+    # ORDER STATISTICS
+    # ==========================================
+
+    pending_orders = Order.objects.filter(
+        status="PENDING"
+    ).count()
+
+    processing_orders = Order.objects.filter(
+        status="PROCESSING"
+    ).count()
+
+    shipped_orders = Order.objects.filter(
+        status="SHIPPED"
+    ).count()
+
+    delivered_orders = Order.objects.filter(
+        status="DELIVERED"
+    ).count()
+
+    cancelled_orders = Order.objects.filter(
+        status="CANCELLED"
+    ).count()
+
+
+    # ==========================================
+    # STOCK STATISTICS
+    # ==========================================
+
+    low_stock_products = Product.objects.filter(
+        is_in_stock=True,
+        quantity__lte=5,
+        quantity__gt=0
+    ).count()
+
+    out_of_stock_products = Product.objects.filter(
+        is_in_stock=False
+    ).count()
+
+
+    # ==========================================
+    # TOTAL REVENUE
+    # ==========================================
+
+    revenue_result = Order.objects.filter(
+        payment_status="PAID"
+    ).aggregate(
+        total=Sum("total_amount")
+    )
+
+    total_revenue = revenue_result["total"] or 0
+
+
+    # ==========================================
+    # RECENT ORDERS
+    # ==========================================
+
+    recent_orders = Order.objects.select_related(
+        "user"
+    ).order_by(
+        "-created_at"
+    )[:5]
+
+
+    # ==========================================
+    # REVENUE ANALYTICS
+    # LAST 30 DAYS
+    # ==========================================
+
+    revenue_data = (
+        Order.objects
+        .filter(
+            payment_status="PAID"
+        )
+        .annotate(
+            day=TruncDate("created_at")
+        )
+        .values("day")
+        .annotate(
+            revenue=Sum("total_amount")
+        )
+        .order_by("day")
+    )
+
+
+    # ==========================================
+    # ORDER ANALYTICS
+    # LAST 30 DAYS
+    # ==========================================
+
+    order_data = (
+        Order.objects
+        .annotate(
+            day=TruncDate("created_at")
+        )
+        .values("day")
+        .annotate(
+            orders=Count("id")
+        )
+        .order_by("day")
+    )
+
+
+    # ==========================================
+    # PREPARE CHART DATA
+    # ==========================================
+
+    revenue_chart_labels = []
+
+    revenue_chart_values = []
+
+    for item in revenue_data:
+
+        revenue_chart_labels.append(
+            item["day"].strftime("%b %d")
+        )
+
+        revenue_chart_values.append(
+            float(item["revenue"] or 0)
+        )
+
+
+    order_chart_labels = []
+
+    order_chart_values = []
+
+    for item in order_data:
+
+        order_chart_labels.append(
+            item["day"].strftime("%b %d")
+        )
+
+        order_chart_values.append(
+            item["orders"] or 0
+        )
+
+
+    # ==========================================
+    # CONTEXT
+    # ==========================================
+
+    context = {
+
+        # Basic
+        "total_products": total_products,
+        "total_categories": total_categories,
+        "total_orders": total_orders,
+        "total_customers": total_customers,
+
+        # Orders
+        "pending_orders": pending_orders,
+        "processing_orders": processing_orders,
+        "shipped_orders": shipped_orders,
+        "delivered_orders": delivered_orders,
+        "cancelled_orders": cancelled_orders,
+
+        # Stock
+        "low_stock_products": low_stock_products,
+        "out_of_stock_products": out_of_stock_products,
+
+        # Revenue
+        "total_revenue": total_revenue,
+
+        # Recent orders
+        "recent_orders": recent_orders,
+
+        # Charts
+        "revenue_chart_labels": revenue_chart_labels,
+        "revenue_chart_values": revenue_chart_values,
+
+        "order_chart_labels": order_chart_labels,
+        "order_chart_values": order_chart_values,
+
+    }
 
 
     return render(
         request,
-        'dashboard/index.html',
-        {
-            'total_products': total_products,
-            'total_categories': total_categories,
-        }
+        "dashboard/index.html",
+        context
     )
 
 
