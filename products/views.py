@@ -3,7 +3,7 @@ from .models import Product
 # Create your views here.
 
 def home(request):
-    products = Product.objects.prefetch_related('images').select_related('brand').order_by('-created_at')[:4]
+    products = Product.objects.prefetch_related('images').select_related('brand').order_by('?')[:4]
     return render(
         request,
         'products/home.html',

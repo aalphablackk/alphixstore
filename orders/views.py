@@ -73,7 +73,7 @@ def dashboard_order_detail(request, order_number):
 
                 if (
                     new_status == "CANCELLED"
-                    and old_status in ["PENDING", "PROCESSING"]
+                    and old_status != ["PENDING", "PROCESSING"]
                 ):
 
                     with transaction.atomic():
