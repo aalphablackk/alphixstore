@@ -54,7 +54,7 @@
                     <i class="bi bi-grid"></i>
 
                     <strong>
-                        {{ products.count }}
+                        {{ total_products }}
                     </strong>
 
                     Products Available
@@ -105,225 +105,534 @@
 
                 <i class="bi bi-box-seam"></i>
 
-                {{ products.count }} products
+                {{ total_products }} products
 
             </div>
 
         </div>
 
 
-
-        <!-- =================================================
-             PRODUCTS GRID
-        ================================================= -->
-
-        <div class="row g-4">
-
-
-            {% for product in products %}
-
-
-                <div
-                    class="col-xl-3 col-lg-4 col-md-6"
-                    data-reveal
-                >
-
-
-                    <article class="product-card">
-
-
-                        <!-- =================================
-                             IMAGE
-                        ================================= -->
-
-                        <div class="product-image-wrapper">
-
-
-                            {% for image in product.images.all %}
-
-
-                                {% if image.is_cover %}
-
-                                    <img
-                                        src="{{ image.image.url }}"
-                                        alt="{{ product.name }}"
-                                        class="product-image"
-                                    >
-
-                                {% endif %}
-
-
-                            {% empty %}
-
-
-                                <div class="product-no-image">
-
-                                    <i class="bi bi-image"></i>
-
-                                    <span>
-                                        No Image
-                                    </span>
-
-                                </div>
-
-
-                            {% endfor %}
-
-
-
-                            <!-- VIEW BUTTON -->
-
-                            <a
-                                href="{% url 'product_detail' product.id %}"
-                                class="product-view-button"
-                            >
-
-                                <i class="bi bi-eye"></i>
-
-                                View Product
-
-                            </a>
-
-
-                        </div>
-
-
-
-                        <!-- =================================
-                             PRODUCT INFORMATION
-                        ================================= -->
-
-                        <div class="product-info">
-
-
-                            <!-- BRAND -->
-
-                            {% if product.brand %}
-
-                                <span class="product-brand">
-
-                                    {{ product.brand.name }}
-
-                                </span>
-
-                            {% endif %}
-
-
-
-                            <!-- NAME -->
-
-                            <h3 class="product-name">
-
-                                {{ product.name }}
-
-                            </h3>
-
-
-
-                            <!-- DESCRIPTION -->
-
-                            <p class="product-description">
-
-                                {{ product.description|truncatewords:12 }}
-
-                            </p>
-
-
-
-                            <!-- PRICE + ACTION -->
-
-                            <div class="product-bottom">
-
-
-                                <span class="product-price">
-
-                                    ₦{{ product.price|intcomma }}
-
-                                </span>
-
-
-                                <a
-                                    href="{% url 'product_detail' product.id %}"
-                                    class="product-arrow"
-                                    aria-label="View {{ product.name }}"
-                                >
-
-                                    <i class="bi bi-arrow-up-right"></i>
-
-                                </a>
-
-
-                            </div>
-
-
-                        </div>
-
-
-                    </article>
-
-
-                </div>
-
-
-            {% empty %}
-
-
-                <!-- =========================================
-                     EMPTY STATE
-                ========================================= -->
-
-                <div class="col-12">
-
-
-                    <div
-                        class="empty-products"
-                        data-reveal
-                    >
-
-                        <div class="empty-products-icon">
-
-                            <i class="bi bi-box-seam"></i>
-
-                        </div>
-
-
-                        <h4>
-
-                            No products found
-
-                        </h4>
-
-
-                        <p>
-
-                            There are currently no products
-                            available in our collection.
-
-                        </p>
-
-
-                        <a
-                            href="{% url 'home' %}"
-                            class="btn btn-primary mt-3"
+            <div class="container py-4">
+
+                <!-- SEARCH -->
+                <form method="GET" class="mb-4">
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search products..."
+                            value="{{ search }}"
                         >
 
-                            Back Home
+                        <button
+                            type="submit"
+                            class="btn btn-dark"
+                        >
+                            Search
+                        </button>
+                    </div>
+                </form>
 
-                        </a>
+
+                <!-- SIDEBAR + PRODUCTS -->
+                <div class="row g-4">
+
+                    <!-- ========================= -->
+                    <!-- FILTER SIDEBAR -->
+                    <!-- ========================= -->
+
+                    <div class="col-lg-3">
+
+                        <div class="card">
+                            <div class="card-body">
+
+                                <h5 class="mb-4">
+                                    Filters
+                                </h5>
+
+                                <form method="GET">
+
+                                    <!-- Preserve search -->
+                                    <input
+                                        type="hidden"
+                                        name="search"
+                                        value="{{ search }}"
+                                    >
+
+
+                                    <!-- CATEGORY -->
+                                    <div class="mb-4">
+
+                                        <label class="form-label fw-bold">
+                                            Category
+                                        </label>
+
+                                        <select
+                                            name="category"
+                                            class="form-select"
+                                        >
+
+                                            <option value="">
+                                                All Categories
+                                            </option>
+
+                                            {% for category in categories %}
+
+                                                <option
+                                                    value="{{ category.id }}"
+                                                    {% if selected_category == category.id|stringformat:"s" %}
+                                                        selected
+                                                    {% endif %}
+                                                >
+                                                    {{ category.name }}
+                                                </option>
+
+                                            {% endfor %}
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- BRAND -->
+                                    <div class="mb-4">
+
+                                        <label class="form-label fw-bold">
+                                            Brand
+                                        </label>
+
+                                        <select
+                                            name="brand"
+                                            class="form-select"
+                                        >
+
+                                            <option value="">
+                                                All Brands
+                                            </option>
+
+                                            {% for brand in brands %}
+
+                                                <option
+                                                    value="{{ brand.id }}"
+                                                    {% if selected_brand == brand.id|stringformat:"s" %}
+                                                        selected
+                                                    {% endif %}
+                                                >
+                                                    {{ brand.name }}
+                                                </option>
+
+                                            {% endfor %}
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- PRICE -->
+                                    <div class="mb-4">
+
+                                        <label class="form-label fw-bold">
+                                            Price Range
+                                        </label>
+
+                                        <div class="row g-2">
+
+                                            <div class="col-6">
+
+                                                <input
+                                                    type="number"
+                                                    name="min_price"
+                                                    class="form-control"
+                                                    placeholder="Min"
+                                                    min="0"
+                                                    value="{{ min_price }}"
+                                                >
+
+                                            </div>
+
+                                            <div class="col-6">
+
+                                                <input
+                                                    type="number"
+                                                    name="max_price"
+                                                    class="form-control"
+                                                    placeholder="Max"
+                                                    min="0"
+                                                    value="{{ max_price }}"
+                                                >
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- AVAILABILITY -->
+                                    <div class="mb-4">
+
+                                        <label class="form-label fw-bold">
+                                            Availability
+                                        </label>
+
+                                        <select
+                                            name="availability"
+                                            class="form-select"
+                                        >
+
+                                            <option value="">
+                                                All Products
+                                            </option>
+
+                                            <option
+                                                value="in_stock"
+                                                {% if selected_availability == "in_stock" %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                In Stock
+                                            </option>
+
+                                            <option
+                                                value="out_of_stock"
+                                                {% if selected_availability == "out_of_stock" %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                Out of Stock
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- SORT -->
+                                    <div class="mb-4">
+
+                                        <label class="form-label fw-bold">
+                                            Sort By
+                                        </label>
+
+                                        <select
+                                            name="sort"
+                                            class="form-select"
+                                        >
+
+                                            <option
+                                                value="newest"
+                                                {% if selected_sort == "newest" %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                Newest
+                                            </option>
+
+                                            <option
+                                                value="oldest"
+                                                {% if selected_sort == "oldest" %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                Oldest
+                                            </option>
+
+                                            <option
+                                                value="price_low"
+                                                {% if selected_sort == "price_low" %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                Price: Low to High
+                                            </option>
+
+                                            <option
+                                                value="price_high"
+                                                {% if selected_sort == "price_high" %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                Price: High to Low
+                                            </option>
+
+                                            <option
+                                                value="name_az"
+                                                {% if selected_sort == "name_az" %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                Name: A to Z
+                                            </option>
+
+                                            <option
+                                                value="name_za"
+                                                {% if selected_sort == "name_za" %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                Name: Z to A
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- BUTTONS -->
+                                    <button
+                                        type="submit"
+                                        class="btn btn-dark w-100 mb-2"
+                                    >
+                                        Apply Filters
+                                    </button>
+
+                                    <a
+                                        href="{% url 'all_products' %}"
+                                        class="btn btn-outline-secondary w-100"
+                                    >
+                                        Clear Filters
+                                    </a>
+
+                                </form>
+
+                            </div>
+                        </div>
 
                     </div>
 
 
+                    <!-- ========================= -->
+                    <!-- PRODUCT GRID -->
+                    <!-- ========================= -->
+
+                    <div class="col-lg-9">
+
+                        <div class="row g-4">
+
+                            {% for product in products %}
+
+                                <div
+                                    class="col-xl-4 col-lg-6 col-md-6"
+                                    data-reveal
+                                >
+
+                                    <article class="product-card">
+
+                                        <!-- IMAGE -->
+                                        <div class="product-image-wrapper">
+
+                                            {% for image in product.images.all %}
+
+                                                {% if image.is_cover %}
+
+                                                    <img
+                                                        src="{% if image.image %}{{ image.image.url }}{% else %}{{ image.image_url }}{% endif %}"
+                                                        alt="{{ product.name }}"
+                                                        class="product-image"
+                                                    >
+
+                                                {% endif %}
+
+                                            {% empty %}
+
+                                                <div class="product-no-image">
+
+                                                    <i class="bi bi-image"></i>
+
+                                                    <span>
+                                                        No Image
+                                                    </span>
+
+                                                </div>
+
+                                            {% endfor %}
+
+
+                                            <!-- VIEW BUTTON -->
+                                            <a
+                                                href="{% url 'product_detail' product.id %}"
+                                                class="product-view-button"
+                                            >
+
+                                                <i class="bi bi-eye"></i>
+
+                                                View Product
+
+                                            </a>
+
+                                        </div>
+
+
+                                        <!-- PRODUCT INFORMATION -->
+                                        <div class="product-info">
+
+                                            {% if product.brand %}
+
+                                                <span class="product-brand">
+                                                    {{ product.brand.name }}
+                                                </span>
+
+                                            {% endif %}
+
+
+                                            <h3 class="product-name">
+                                                {{ product.name }}
+                                            </h3>
+
+
+                                            <p class="product-description">
+                                                {{ product.description|truncatewords:12 }}
+                                            </p>
+
+
+                                            <div class="product-bottom">
+
+                                                <span class="product-price">
+                                                    ₦{{ product.price|intcomma }}
+                                                </span>
+
+                                                <a
+                                                    href="{% url 'product_detail' product.id %}"
+                                                    class="product-arrow"
+                                                    aria-label="View {{ product.name }}"
+                                                >
+                                                    <i class="bi bi-arrow-up-right"></i>
+                                                </a>
+
+                                            </div>
+
+                                        </div>
+
+                                    </article>
+
+                                </div>
+
+                            {% empty %}
+
+                                <div class="col-12">
+
+                                    <div
+                                        class="empty-products"
+                                        data-reveal
+                                    >
+
+                                        <div class="empty-products-icon">
+                                            <i class="bi bi-box-seam"></i>
+                                        </div>
+
+                                        <h4>
+                                            No products found
+                                        </h4>
+
+                                        <p>
+                                            There are currently no products
+                                            available in our collection.
+                                        </p>
+
+                                        <a
+                                            href="{% url 'home' %}"
+                                            class="btn btn-primary mt-3"
+                                        >
+                                            Back Home
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                    {% if products.has_other_pages %}
+
+                        <nav
+                            aria-label="Product pagination"
+                            class="mt-5"
+                        >
+
+                            <ul class="pagination justify-content-center">
+
+                                {% if products.has_previous %}
+
+                                    <li class="page-item">
+
+                                        <a
+                                            class="page-link"
+                                            href="?page={{ products.previous_page_number }}&search={{ search }}&category={{ selected_category }}&brand={{ selected_brand }}&min_price={{ min_price }}&max_price={{ max_price }}&availability={{ selected_availability }}&sort={{ selected_sort }}"
+                                        >
+                                            <i class="bi bi-chevron-left"></i>
+                                            Previous
+                                        </a>
+
+                                    </li>
+
+                                {% endif %}
+
+
+                                {% for num in products.paginator.page_range %}
+
+                                    {% if num == products.number %}
+
+                                        <li class="page-item active">
+
+                                            <span class="page-link">
+                                                {{ num }}
+                                            </span>
+
+                                        </li>
+
+                                    {% else %}
+
+                                        <li class="page-item">
+
+                                            <a
+                                                class="page-link"
+                                                href="?page={{ num }}&search={{ search }}&category={{ selected_category }}&brand={{ selected_brand }}&min_price={{ min_price }}&max_price={{ max_price }}&availability={{ selected_availability }}&sort={{ selected_sort }}"
+                                            >
+                                                {{ num }}
+                                            </a>
+
+                                        </li>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+
+                                {% if products.has_next %}
+
+                                    <li class="page-item">
+
+                                        <a
+                                            class="page-link"
+                                            href="?page={{ products.next_page_number }}&search={{ search }}&category={{ selected_category }}&brand={{ selected_brand }}&min_price={{ min_price }}&max_price={{ max_price }}&availability={{ selected_availability }}&sort={{ selected_sort }}"
+                                        >
+                                            Next
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+
+                                    </li>
+
+                                {% endif %}
+
+                            </ul>
+
+                        </nav>
+
+                    {% endif %}
+
                 </div>
 
+            </div>
 
-            {% endfor %}
+
 
 
         </div>
-
-
-    </div>
 
 </section>
 
@@ -1076,6 +1385,97 @@
     }
 
 }
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.all-products-section .pagination {
+    gap: 6px;
+}
+
+.all-products-section .pagination .page-item {
+    margin: 0;
+}
+
+.all-products-section .pagination .page-link {
+    min-width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 12px;
+
+    background-color: var(--surface);
+    color: var(--text);
+
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    font-size: 0.82rem;
+    font-weight: 600;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* HOVER */
+
+.all-products-section .pagination .page-link:hover {
+    background-color: var(--primary);
+    color: white;
+
+    border-color: var(--primary);
+
+    transform: translateY(-2px);
+}
+
+
+/* ACTIVE PAGE */
+
+.all-products-section .pagination .page-item.active .page-link {
+    background-color: var(--primary);
+    color: white;
+
+    border-color: var(--primary);
+
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.18);
+}
+
+
+/* DISABLED */
+
+.all-products-section .pagination .page-item.disabled .page-link {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 575px) {
+
+    .all-products-section .pagination {
+        gap: 4px;
+    }
+
+    .all-products-section .pagination .page-link {
+        min-width: 36px;
+        height: 36px;
+
+        padding: 0 9px;
+
+        font-size: 0.75rem;
+    }
+
+}   
 
 </style>
 

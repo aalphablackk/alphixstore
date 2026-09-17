@@ -312,7 +312,7 @@
                                 {% if image.is_cover %}
 
                                     <img
-                                        src="{{ image.image.url }}"
+                                        src="{% if image.image %}{{ image.image.url }}{% else %}{{ image.image_url }}{% endif %}"
                                         alt="{{ product.name }}"
                                         class="product-image"
                                     >

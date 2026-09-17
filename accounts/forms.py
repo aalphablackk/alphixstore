@@ -10,15 +10,28 @@ class RegisterForm(UserCreationForm):
         required=True
     )
 
-    
     class Meta:
         model = User
         fields = [
-            'username',
-            'email',
-            'password1',
-            'password2',
+            "username",
+            "email",
+            "password1",
+            "password2",
         ]
+
+    def clean_email(self):
+        email = self.cleaned_data["email"].strip().lower()
+
+        if User.objects.filter(
+            email__iexact=email
+        ).exists():
+            raise forms.ValidationError(
+                "An account with this email already exists."
+            )
+
+        return email
+
+    
 
 class LoginForm(AuthenticationForm):
 
@@ -26,7 +39,8 @@ class LoginForm(AuthenticationForm):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Username",
+                "placeholder": "Username or Email",
+                "autocomplete": "username",
             }
         )
     )
@@ -36,25 +50,10 @@ class LoginForm(AuthenticationForm):
             attrs={
                 "class": "form-control",
                 "placeholder": "Password",
+                "autocomplete": "current-password",
             }
         )
     )
-
-
-
-# class LoginForm(AuthenticationForm):
-
-#     email = forms.EmailField(
-#             required=True
-#         )
-
-#     class Meta:
-#             model = User
-#             fields = [
-#                 'username',
-#                 'password',
-#             ]    
-
 
 
 

@@ -7,6 +7,9 @@ from .models import Order, OrderItem
 from django.db import transaction
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Q
+from django.contrib import messages
+from .email_service import send_order_confirmation_email
+from .services import cancel_order_and_restore_stock
 
 
 
@@ -14,22 +17,6 @@ def is_staff_user(user):
 
     return user.is_staff
 
-@user_passes_test(is_staff_user)
-def dashboard_orders(request):
-
-    orders = Order.objects.select_related(
-        "user"
-    ).order_by(
-        "-created_at"
-    )
-
-    return render(
-        request,
-        "orders/dashboard_orders.html",
-        {
-            "orders": orders
-        }
-    )
 
 @user_passes_test(is_staff_user)
 def dashboard_order_detail(request, order_number):
@@ -71,41 +58,10 @@ def dashboard_order_detail(request, order_number):
                 # Cancel order
                 # ---------------------------------
 
-                if (
-                    new_status == "CANCELLED"
-                    and old_status != ["PENDING", "PROCESSING"]
-                ):
-
-                    with transaction.atomic():
-
-                        for item in order.items.select_related(
-                            "product"
-                        ):
-
-                            product = item.product
-
-                            product.quantity += item.quantity
-
-                            product.is_in_stock = True
-
-                            product.save()
+                if new_status == "CANCELLED" and old_status != "CANCELLED":
 
 
-                        order.status = "CANCELLED"
-
-                        order.save()
-
-
-                # ---------------------------------
-                # Prevent cancelling twice
-                # ---------------------------------
-
-                elif (
-                    new_status == "CANCELLED"
-                    and old_status == "CANCELLED"
-                ):
-
-                    pass
+                        cancel_order_and_restore_stock(order)
 
 
                 else:
@@ -238,25 +194,85 @@ def dashboard_orders(request):
 @login_required(login_url="/accounts/login/")
 def checkout(request):
 
-    cart = request.session.get("cart", {})
+    cart_data = request.session.get("cart", {})
 
-    if not cart:
+    if not cart_data:
         return redirect("cart")
 
-    # profile = request.user.userprofile
-
     cart_products = []
-
     total_amount = 0
 
-    for product_id, quantity in cart.items():
+    # ---------------------------------
+    # Get products and validate stock
+    # ---------------------------------
 
-        product = get_object_or_404(
-            Product.objects.prefetch_related("images"),
-            id=product_id
+    for product_id, quantity in cart_data.items():
+
+        try:
+            quantity = int(quantity)
+
+        except (TypeError, ValueError):
+
+            del cart_data[product_id]
+
+            request.session["cart"] = cart_data
+            request.session.modified = True
+
+            messages.error(
+                request,
+                "An invalid item was found in your cart."
+            )
+
+            return redirect("cart")
+
+        if quantity <= 0:
+
+            del cart_data[product_id]
+
+            request.session["cart"] = cart_data
+            request.session.modified = True
+
+            continue
+
+        product = (
+            Product.objects
+            .prefetch_related("images")
+            .filter(id=product_id)
+            .first()
         )
 
-        quantity = int(quantity)
+        if not product:
+
+            messages.error(
+                request,
+                "One of the products in your cart "
+                "is no longer available."
+            )
+
+            return redirect("cart")
+
+        # ---------------------------------
+        # Stock validation
+        # ---------------------------------
+
+        if not product.is_in_stock or product.quantity <= 0:
+
+            messages.error(
+                request,
+                f"{product.name} is currently out of stock."
+            )
+
+            return redirect("cart")
+
+        if quantity > product.quantity:
+
+            messages.error(
+                request,
+                f"Only {product.quantity} unit(s) of "
+                f"{product.name} are available."
+            )
+
+            return redirect("cart")
 
         subtotal = product.price * quantity
 
@@ -273,6 +289,9 @@ def checkout(request):
             "cover_image": cover_image,
         })
 
+    # ---------------------------------
+    # Checkout form
+    # ---------------------------------
 
     if request.method == "POST":
 
@@ -280,119 +299,134 @@ def checkout(request):
 
         if form.is_valid():
 
-            # Stock validation
-            for item in cart_products:
+            try:
 
-                product = item["product"]
+                with transaction.atomic():
 
-                quantity = item["quantity"]
+                    # ---------------------------------
+                    # Lock products
+                    # ---------------------------------
 
-                if not product.is_in_stock:
+                    locked_products = {}
 
-                    form.add_error(
-                        None,
-                        f"{product.name} is currently out of stock."
+                    for item in cart_products:
+
+                        product = (
+                            Product.objects
+                            .select_for_update()
+                            .get(id=item["product"].id)
+                        )
+
+                        # Re-check stock after locking
+
+                        if (
+                            not product.is_in_stock
+                            or product.quantity < item["quantity"]
+                        ):
+
+                            raise ValueError(
+                                f"Only {product.quantity} unit(s) "
+                                f"of {product.name} are available."
+                            )
+
+                        locked_products[
+                            product.id
+                        ] = product
+
+                    # ---------------------------------
+                    # Create Order
+                    # ---------------------------------
+
+                    order = Order.objects.create(
+
+                        user=request.user,
+
+                        total_amount=total_amount,
+
+                        shipping_address=form.cleaned_data[
+                            "shipping_address"
+                        ],
+
+                        phone_number=form.cleaned_data[
+                            "phone_number"
+                        ],
+                        stock_reserved=True,
+
                     )
 
-                    return render(
-                        request,
-                        "orders/checkout.html",
-                        {
-                            "form": form,
-                            "cart_products": cart_products,
-                            "total_amount": total_amount,
-                        }
-                    )
+                    # ---------------------------------
+                    # Create Order Items + Deduct Stock
+                    # ---------------------------------
 
-                if quantity > product.quantity:
+                    for item in cart_products:
 
-                    form.add_error(
-                        None,
-                        f"Only {product.quantity} unit(s) of "
-                        f"{product.name} are available."
-                    )
+                        product = locked_products[
+                            item["product"].id
+                        ]
 
-                    return render(
-                        request,
-                        "orders/checkout.html",
-                        {
-                            "form": form,
-                            "cart_products": cart_products,
-                            "total_amount": total_amount,
-                        }
-                    )
+                        quantity = item["quantity"]
 
+                        OrderItem.objects.create(
 
-            with transaction.atomic():
+                            order=order,
 
-                order = Order.objects.create(
+                            product=product,
 
-                    user=request.user,
+                            quantity=quantity,
 
-                    total_amount=total_amount,
+                            price=product.price,
 
-                    shipping_address=form.cleaned_data[
-                        "shipping_address"
-                    ],
+                            subtotal=item["subtotal"],
 
-                    phone_number=form.cleaned_data[
-                        "phone_number"
-                    ],
+                        )
 
+                        product.quantity -= quantity
+
+                        if product.quantity <= 0:
+
+                            product.quantity = 0
+                            product.is_in_stock = False
+
+                        product.save(
+                            update_fields=[
+                                "quantity",
+                                "is_in_stock",
+                                "updated_at",
+                            ]
+                        )
+
+                # ---------------------------------
+                # Order created successfully
+                # ---------------------------------
+                # Clear cart because the cart has now
+                # been converted into an Order.
+                request.session["cart"] = {}
+                request.session.modified = True
+                transaction.on_commit(
+                    lambda: send_order_confirmation_email(order)
+                )
+                messages.success(
+                    request,
+                    "Your order has been created successfully."
                 )
 
+                return redirect(
+                    "order_detail",
+                    order_number=order.order_number
+                )
 
-                for item in cart_products:
+            except ValueError as exc:
 
-                    product = item["product"]
+                messages.error(
+                    request,
+                    str(exc)
+                )
 
-                    quantity = item["quantity"]
-
-
-                    OrderItem.objects.create(
-
-                        order=order,
-
-                        product=product,
-
-                        quantity=quantity,
-
-                        price=product.price,
-
-                        subtotal=item["subtotal"],
-
-                    )
-
-
-                    product.quantity -= quantity
-
-
-                    if product.quantity <= 0:
-
-                        product.quantity = 0
-
-                        product.is_in_stock = False
-
-
-                    product.save()
-
-
-            request.session["cart"] = {}
-
-            request.session.modified = True
-
-
-            return redirect(
-                "order_detail",
-                order_number=order.order_number
-            )
-
+                return redirect("cart")
 
     else:
 
-
         form = CheckoutForm()
-
 
     return render(
         request,
@@ -403,6 +437,7 @@ def checkout(request):
             "total_amount": total_amount,
         }
     )
+
 
 @login_required(login_url="/accounts/login/")
 def order_detail(request, order_number):

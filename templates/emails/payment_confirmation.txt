@@ -1,0 +1,13 @@
+Hi {{ order.user.first_name|default:order.user.username }},
+
+Your payment has been successfully confirmed.
+
+Order Number: {{ order.order_number }}
+Payment Reference: {{ payment.payment_reference }}
+Amount Paid: ₦{{ payment.amount|floatformat:2 }}
+
+Your order is now being processed.
+
+Thank you for shopping with Alphix Store.
+
+Alphix Store

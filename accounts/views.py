@@ -12,67 +12,36 @@ from .forms import RegisterForm, LoginForm, ProfileForm, UserForm
 # Create your views here.
 def register(request):
 
-
-    if request.method == 'POST':
+    if request.method == "POST":
 
         form = RegisterForm(request.POST)
-        if form.is_valid:
-            user=form.save()
+
+        if form.is_valid():
+
+            user = form.save()
+
             messages.success(
                 request,
-                "Account created successfully. You can now log in."
+                "Account created successfully."
             )
 
-            login(request,user)
+            login(request, user)
 
-            return redirect(
-                'home'
-            )
-        
+            return redirect("home")
 
     else:
-        form= RegisterForm()
-        return render (
-            request,
-            'accounts/register.html',
-            context= {
-                'form': form
-            }
-        )
+
+        form = RegisterForm()
+
+    return render(
+        request,
+        "accounts/register.html",
+        {
+            "form": form
+        }
+    )
     
 
-# def user_login(request):
-#     if request.method == 'POST':
-#         username = request.POST.get("username")
-#         password = request.POST.get("password")
-
-#         user = authenticate(
-#             request,
-#             username=username,
-#             password=password
-#         )
-#         if user is not None:
-
-#             login(request, user)
-
-#             return redirect("home")
-
-#     else:
-#         return render(
-#                 request,
-#                 "accounts/login.html",
-#                 {
-#                     "error": "Invalid username or password."
-#                 }
-#             )
-
-
-
-
-#     return render(
-#         request,
-#         'accounts/login.html',
-#     )
 
 def user_login(request):
 
@@ -135,33 +104,6 @@ def user_logout(request):
     return redirect("login")
 
 
-
-
-
-
-
-# def RegisterForm(request):
-#     if request.method == 'POST':
-#         form = RegisterForm(request.POST)
-#         if form.is_valid:
-#             user = form.save()
-#             login(request, user)
-#             return redirect('home')
-
-#     else:
-#         form= RegisterForm()
-#         return render(
-#             request,
-#             'accounts/register.html',
-#             context={
-#                 'form':form
-#             }
-#         )
-
-
-
-
-# @login_required
 @login_required(login_url="/accounts/login/")
 def profile(request):
 

@@ -253,11 +253,19 @@ Product Images | Alphix Store
                         <div class="media-image-wrapper">
 
 
-                            <img
-                                src="{{ image.image.url }}"
-                                alt="{{ product.name }}"
-                                class="media-image"
-                            >
+                            {% if image.image %}
+                                <img
+                                    src="{{ image.image.url }}"
+                                    alt="{{ product.name }}"
+                                    class="media-image"
+                                >
+                            {% elif image.image_url %}
+                                <img
+                                    src="{{ image.image_url }}"
+                                    alt="{{ product.name }}"
+                                    class="media-image"
+                                >
+                            {% endif %}
 
 
                             {% if image.is_cover %}
@@ -276,7 +284,7 @@ Product Images | Alphix Store
                             <div class="image-overlay">
 
                                 <a
-                                    href="{{ image.image.url }}"
+                                    href="{% if image.image %}{{ image.image.url }}{% else %}{{ image.image_url }}{% endif %}"
                                     target="_blank"
                                     class="image-overlay-button"
                                     title="View Image"

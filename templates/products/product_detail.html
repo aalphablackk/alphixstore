@@ -83,7 +83,7 @@
                                 >
 
                                     <img
-                                        src="{{ image.image.url }}"
+                                        src="{% if image.image %}{{ image.image.url }}{% else %}{{ image.image_url }}{% endif %}"
                                         alt="{{ product.name }}"
                                         class="product-detail-image"
                                     >
@@ -185,7 +185,7 @@
                                 >
 
                                     <img
-                                        src="{{ image.image.url }}"
+                                        src="{% if image.image %}{{ image.image.url }}{% else %}{{ image.image_url }}{% endif %}"
                                         alt="{{ product.name }} image {{ forloop.counter }}"
                                     >
 

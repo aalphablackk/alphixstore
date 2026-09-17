@@ -310,7 +310,19 @@ Order {{ order.order_number }} | Alphix Store
 
                         </div>
 
+                        {% if order.payment_status == "PENDING" or order.payment_status == "FAILED" %}
+                            <a
+                                href="{% url 'retry_payment' order.order_number %}"
+                                class="btn btn-primary"
+                            >
+                                Pay Now
+                            </a>
+                        {% endif %}
                     </div>
+                    
+
+                    
+
 
 
 

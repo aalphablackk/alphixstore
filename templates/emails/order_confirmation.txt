@@ -1,0 +1,27 @@
+Hi {{ order.user.first_name|default:order.user.username }},
+
+Thank you for your order with Alphix Store.
+
+Your order has been received successfully.
+
+Order Number: {{ order.order_number }}
+Total Amount: ₦{{ order.total_amount|floatformat:2 }}
+
+Items:
+{% for item in items %}
+- {{ item.product.name }} × {{ item.quantity }} — ₦{{ item.subtotal|floatformat:2 }}
+{% endfor %}
+
+Shipping Address:
+{{ order.shipping_address }}
+
+Phone:
+{{ order.phone_number }}
+
+Your order is currently awaiting payment.
+
+Once payment is completed, we will begin processing your order.
+
+Thank you for shopping with Alphix Store.
+
+Alphix Store

@@ -60,6 +60,8 @@ class Order(models.Model):
         default="PENDING"
     )
 
+    stock_reserved = models.BooleanField(default=True)
+
     shipping_address = models.CharField(
         max_length=255
     )
@@ -67,6 +69,7 @@ class Order(models.Model):
     phone_number = models.CharField(
         max_length=20
     )
+
 
     created_at = models.DateTimeField(
         auto_now_add=True
