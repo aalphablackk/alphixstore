@@ -55,6 +55,12 @@ class ProductImage(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    @property
+    def display_url(self):
+        if self.image:
+            return self.image.url
+        return self.image_url or ""
 
     def __str__(self):
         return self.product.name
