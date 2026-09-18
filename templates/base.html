@@ -278,7 +278,7 @@
 
 
                     <button
-                        class="nav-link account-nav-button dropdown-toggle"
+                        class="nav-link account-nav-button dropdown-toggle d-flex align-items-center gap-2"
                         type="button"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
@@ -286,14 +286,26 @@
 
                         {% if request.user.is_authenticated %}
 
-                            {% if request.user.first_name %}
-
-                                {{ request.user.first_name }}
-
+                            {% if request.user.profile.profile_picture %}
+                                <img
+                                    src="{{ request.user.profile.profile_picture.url }}"
+                                    alt="{{ request.user.username }}"
+                                    class="navbar-profile-image"
+                                >
                             {% else %}
+                                <span class="navbar-profile-fallback">
+                                    {% if request.user.first_name %}
+                                        {{ request.user.first_name|first|upper }}
+                                    {% else %}
+                                        {{ request.user.username|first|upper }}
+                                    {% endif %}
+                                </span>
+                            {% endif %}
 
-                                Account
-
+                            {% if request.user.first_name %}
+                                {{ request.user.first_name }}
+                            {% else %}
+                                {{ request.user.username }}
                             {% endif %}
 
                         {% else %}
