@@ -25,7 +25,7 @@ def register(request):
                 "Account created successfully."
             )
 
-            login(request, user)
+            login(request, user, backend="accounts.backends.UsernameOrEmailBackend")
 
             return redirect("home")
 
